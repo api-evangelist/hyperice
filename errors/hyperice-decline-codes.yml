@@ -1,0 +1,115 @@
+generated: '2026-07-31'
+method: derived
+source:
+- graphql/hyperice-storefront.graphql
+description: Hyperice sells directly through a Shopify checkout, so its API surface does expose card authorization
+  failure reasons. These are NOT issuer decline codes in the acquirer sense — Hyperice is a merchant,
+  not an acquirer, and the issuer response is masked. What the buyer/agent actually receives is the validation-and-gateway
+  subset below, reproduced verbatim from the live Storefront GraphQL schema. Complements errors/hyperice-problem-types.yml.
+envelope_field: CartUserError.code / SubmitFailed.errors[].code
+issuer_codes_exposed: false
+masking_note: No raw issuer decline code, AVS result or CVV result is surfaced. The most specific failure
+  an agent can observe is a generic PAYMENTS_CREDIT_CARD_GENERIC, so an agent cannot distinguish "insufficient
+  funds" from "issuer declined" and must not retry a declined authorization automatically.
+decline_codes:
+- code: PAYMENTS_CREDIT_CARD_BASE_EXPIRED
+  meaning: base expired
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: do-not-auto-retry
+- code: PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED
+  meaning: base gateway not supported
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: do-not-auto-retry
+- code: PAYMENTS_CREDIT_CARD_GENERIC
+  meaning: generic
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: do-not-auto-retry
+- code: PAYMENTS_CREDIT_CARD_MONTH_INCLUSION
+  meaning: month inclusion
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_NUMBER_INVALID
+  meaning: number invalid
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT
+  meaning: number invalid format
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK
+  meaning: verification value blank
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE
+  meaning: verification value invalid for card type
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_YEAR_EXPIRED
+  meaning: year expired
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: do-not-auto-retry
+- code: PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR
+  meaning: year invalid expiry year
+  surfaces:
+  - CartUserError
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_BASE_INVALID_START_DATE_OR_ISSUE_NUMBER_FOR_DEBIT
+  meaning: base invalid start date or issue number for debit
+  surfaces:
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_BRAND_NOT_SUPPORTED
+  meaning: brand not supported
+  surfaces:
+  - SubmitFailed
+  action: do-not-auto-retry
+- code: PAYMENTS_CREDIT_CARD_FIRST_NAME_BLANK
+  meaning: first name blank
+  surfaces:
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_LAST_NAME_BLANK
+  meaning: last name blank
+  surfaces:
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_NAME_INVALID
+  meaning: name invalid
+  surfaces:
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_CREDIT_CARD_SESSION_ID
+  meaning: session id
+  surfaces:
+  - SubmitFailed
+  action: correct-and-resubmit
+- code: PAYMENTS_SHOPIFY_PAYMENTS_REQUIRED
+  meaning: shopify required
+  surfaces:
+  - SubmitFailed
+  action: correct-and-resubmit
+x-evidence:
+  fetched: '2026-07-31'
+  graphql_introspection:
+    url: https://hyperice.com/api/2026-04/graphql.json
+    http_status: 200
+count: 17

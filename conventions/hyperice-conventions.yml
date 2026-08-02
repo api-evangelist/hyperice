@@ -1,0 +1,191 @@
+generated: '2026-07-31'
+method: probed
+source:
+- https://hyperice.com/llms.txt
+- graphql/hyperice-storefront.graphql
+- https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+- openapi/hyperice-storefront-openapi.yml
+description: >-
+  Cross-cutting request/response semantics across Hyperice's three surfaces. The
+  three do not share conventions — pagination, error shape and idempotency each
+  work differently depending on which surface an agent is on, which is the single
+  most important thing for an integrator to know here.
+authentication:
+  style: tiered
+  summary: >-
+    Public read requires nothing; the MCP commerce tier requires a UCP agent
+    profile URI; the customer-account tier requires OIDC authorization_code +
+    PKCE S256 bearer tokens.
+  artifact: authentication/hyperice-authentication.yml
+idempotency:
+  supported: true
+  surfaces:
+  - surface: mcp-ucp
+    mechanism: request-parameter
+    field: meta['idempotency-key']
+    header_equivalent: Idempotency-Key
+    scope: per-method call
+    spec_text: >-
+      "Unique key for retry safety. Maps to HTTP Idempotency-Key header."
+      (UCP Shopping Service OpenRPC, components.schemas.meta — the schema
+      Hyperice's own /.well-known/ucp designates for its shopping service)
+    applies_to:
+    - create_cart
+    - update_cart
+    - cancel_cart
+    - create_checkout
+    - update_checkout
+    - complete_checkout
+    - cancel_checkout
+    note: >-
+      Every UCP method takes a required `meta` object, so the idempotency key is
+      available on the mutating tools — including complete_checkout, the one
+      irreversible operation on the perimeter.
+  - surface: graphql
+    mechanism: mutation-argument
+    field: idempotencyKey
+    type: String!
+    applies_to: [shopPayPaymentRequestSessionSubmit]
+    error_code: IDEMPOTENCY_KEY_ALREADY_USED
+    spec_text: >-
+      "The idempotencyKey argument ensures the payment transaction occurs only
+      once, preventing duplicate charges."
+    note: >-
+      Idempotency on the GraphQL surface is narrow — it is required on the Shop
+      Pay payment submission and nowhere else. Cart mutations are not
+      idempotency-keyed; they are naturally idempotent only insofar as they are
+      set-style operations (cartLinesUpdate) rather than append-style
+      (cartLinesAdd, which is NOT safe to retry blindly).
+  - surface: rest
+    mechanism: none
+    note: The public REST surface is read-only, so idempotency is not applicable.
+  retention: not published
+pagination:
+  - surface: rest
+    style: page-number
+    params:
+      limit: {max: 250, default: 50}
+      page: {base: 1}
+    response_fields: []
+    note: >-
+      No total count, no next/prev link, no Link header. A client discovers the
+      end of the catalog by receiving a short page. Verified live: limit=250
+      returned all 68 published products.
+  - surface: graphql
+    style: cursor
+    spec: GraphQL Cursor Connections Specification (Relay)
+    params: {first: Int, last: Int, after: String, before: String, reverse: Boolean, sortKey: enum}
+    response_fields: [edges, node, cursor, pageInfo.hasNextPage, pageInfo.hasPreviousPage, pageInfo.startCursor, pageInfo.endCursor]
+    note: 38 connection fields across the schema.
+  - surface: mcp-ucp
+    style: not published
+    note: Pagination shape for search_catalog is defined by the UCP catalog_search schema, not by Hyperice.
+filtering_and_search:
+  rest: none — /products.json accepts no query term
+  graphql: 'search(query:), predictiveSearch(query:), products(query:), productTags, productTypes'
+  html: GET /search?q={query}&type=product (documented by Hyperice in /agents.md)
+  mcp: search_catalog
+error_envelopes:
+  rfc9457: false
+  note: No surface uses application/problem+json.
+  surfaces:
+  - surface: graphql
+    shape: >-
+      Top-level `errors[]` array per the GraphQL spec, each with message,
+      locations[], path[], and extensions{code, typeName, fieldName}. HTTP status
+      remains 200 for field-level errors.
+    example_code: undefinedField
+    mutation_errors: >-
+      Mutations additionally return typed user errors in the payload rather than
+      top-level errors: CartUserError, CustomerUserError, MetafieldsSetUserError,
+      MetafieldDeleteUserError, UserErrorsShopPayPaymentRequestSessionUserError,
+      and the generic UserError. This is a two-channel error model — transport
+      errors up top, domain errors in the payload — and an agent must check both.
+    unsupported_version: 'HTTP 404 with {"errors":[{"message":"Not Found","extensions":{"code":"NOT_FOUND"}}]}'
+  - surface: mcp-ucp
+    shape: >-
+      JSON-RPC 2.0 error object. Observed: HTTP 422 with
+      {"jsonrpc":"2.0","id":1,"error":{"code":-32001,"message":"UCP discovery
+      failed","data":{"code":"invalid_profile_url","content":"...","continue_url":"..."}}}.
+      Note the non-200 HTTP status accompanying a JSON-RPC error, and the
+      `continue_url` field offering a human-recovery path.
+  - surface: rest
+    shape: >-
+      Bare HTTP status. A missing product returns 404 with content-type
+      application/json and a zero-length body — no error document at all.
+rate_limiting:
+  artifact: rate-limits/hyperice-rate-limits.yml
+  signalling:
+    graphql: >-
+      Query cost is returned on every response in extensions.cost
+      (requestedQueryCost observed). Throttling is expressed in-band as union
+      members — CartThrottled on cartPrepareForCompletion and SubmitThrottled on
+      cartSubmitForCompletion — rather than as HTTP 429.
+    mcp: >-
+      "The MCP endpoint is rate-limited per IP. Back off on 429 responses."
+      (hyperice.com/llms.txt)
+    buyer_ip_header: >-
+      Shopify-Storefront-Buyer-IP — documented in the schema for server-side
+      callers so per-IP throttling attributes to the buyer's IP rather than the
+      caller's. Case-sensitive.
+  headers_observed: []
+  note: >-
+    No X-RateLimit-* or Retry-After headers were observed on any successful
+    response.
+request_tracing:
+  header: x-request-id
+  observed_on: https://hyperice.com/api/2026-04/graphql.json
+  example_shape: 'bb085d27-6b8f-43cf-a5c3-c980cee306f5-1785542317'
+  note: UUID with a suffixed unix timestamp. Returned on GraphQL responses.
+versioning:
+  - surface: graphql
+    scheme: date-based calendar version in the URL path
+    current: '2026-04'
+    supported: ['2025-10', '2026-01', '2026-04', '2026-07']
+    discovery: 'query { publicApiVersions { handle supported displayName } }'
+    header: x-shopify-api-version returned on every response
+    retired_behaviour: 'HTTP 404 {"errors":[{"message":"Not Found","extensions":{"code":"NOT_FOUND"}}]}'
+  - surface: mcp-ucp
+    scheme: date-based protocol version
+    current: '2026-04-08'
+    supported: ['2026-04-08', '2026-01-23']
+    discovery: GET /.well-known/ucp
+  - surface: rest
+    scheme: unversioned
+    note: The .json storefront endpoints carry no version segment and no version header.
+content_negotiation:
+  mcp_accept: 'application/json, text/event-stream'
+  graphql: application/json
+  rest: application/json
+localization:
+  locales: 17
+  mechanism: >-
+    URL path prefix (/fr-fr/, /de-de/, /en-gb/, /en-ca/, /fr-ca/, /es-es/,
+    /it-it/, /pt-pt/, /de-at/ and English variants), each with its own sitemap.
+  graphql_field: localization
+  agent_guidance: >-
+    "Use buyer context. Pass context.address_country and context.currency for
+    accurate pricing and availability." (hyperice.com/llms.txt)
+agent_rules:
+  - >-
+    Checkout requires human approval. Agents must not complete payment without
+    explicit buyer consent.
+  - >-
+    Prefer the Shop skill (https://shop.app/SKILL.md) over screen-scraping or
+    scripting the storefront directly.
+  - Respect rate limits; back off on 429 responses.
+cross_links:
+  errors: errors/hyperice-problem-types.yml
+  lifecycle: lifecycle/hyperice-lifecycle.yml
+  authentication: authentication/hyperice-authentication.yml
+  scopes: scopes/hyperice-scopes.yml
+  rate_limits: rate-limits/hyperice-rate-limits.yml
+  agentic_access: agentic-access/hyperice-agentic-access.yml
+x-evidence:
+  fetched: '2026-07-31'
+  probes:
+  - {url: 'https://hyperice.com/products.json?limit=250', http_status: 200, note: '68 products'}
+  - {url: 'https://hyperice.com/products.json?limit=2&page=2', http_status: 200, note: 'page param honoured'}
+  - {url: 'https://hyperice.com/products/does-not-exist-xyz.json', http_status: 404, note: 'empty body, application/json'}
+  - {url: 'https://hyperice.com/api/2019-01/graphql.json', http_status: 404, note: 'retired version'}
+  - {url: 'https://hyperice.com/api/2026-04/graphql.json', http_status: 200, note: 'x-request-id + x-shopify-api-version headers, extensions.cost'}

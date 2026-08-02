@@ -1,0 +1,173 @@
+generated: '2026-07-31'
+method: derived
+source:
+- graphql/hyperice-storefront.graphql
+- openapi/hyperice-storefront-openapi.yml
+description: >-
+  The commerce entity graph behind Hyperice's storefront, derived from the live
+  Shopify Storefront GraphQL schema (424 types) and from the id-reference fields
+  observed in the public JSON responses. Only entities actually reachable on
+  Hyperice's public perimeter are listed.
+identifiers:
+  graphql:
+    scheme: Global ID (base64 gid://shopify/{Type}/{numeric})
+    field: id
+    type: ID!
+    interface: Node
+    batch_lookup: 'nodes(ids: [ID!]!)'
+  rest:
+    scheme: bare 64-bit integer
+    field: id
+    note: >-
+      The .json surface exposes raw numeric ids (e.g. product 9440344998102,
+      variant/image ids) with no gid wrapper, so ids are NOT portable between the
+      REST and GraphQL surfaces without re-encoding.
+  human_key:
+    field: handle
+    note: >-
+      handle (URL slug) is the practical join key across surfaces — it is stable,
+      present on Product, Collection, Blog, Article and Page, and is what
+      /products/{handle}.json and productByHandle both accept.
+entities:
+- name: Shop
+  root: true
+  description: The store itself. Name "Hyperice", primary domain https://hyperice.com, currency USD, country US.
+  surfaces: [graphql]
+  key_fields: [name, description, primaryDomain, paymentSettings, shipsToCountries, privacyPolicy, termsOfService, refundPolicy, shippingPolicy]
+- name: Product
+  description: A sellable recovery device or accessory.
+  surfaces: [graphql, rest]
+  rest_operations: [listProducts, getProduct, listCollectionProducts]
+  graphql_fields: [product, productByHandle, products, productRecommendations]
+  key_fields: [id, title, handle, body_html, vendor, product_type, tags, published_at, created_at, updated_at]
+  observed_count: 68
+  observed_vendor: Hyperice
+  observed_product_type: Recovery Device
+- name: ProductVariant
+  description: A purchasable configuration of a product (size, colour, attachment set).
+  surfaces: [graphql, rest]
+  key_fields: [id, title, sku, price, compare_at_price, available, requires_shipping, taxable, grams, position, option1, option2, option3]
+- name: Image
+  description: Product or variant imagery.
+  surfaces: [graphql, rest]
+  key_fields: [id, src, width, height, position, product_id, variant_ids]
+- name: ProductOption
+  description: A named option axis (e.g. Colour) with its allowed values.
+  surfaces: [graphql, rest]
+  key_fields: [name, position, values]
+- name: Collection
+  description: A merchandising grouping of products (e.g. Accessories).
+  surfaces: [graphql, rest]
+  rest_operations: [listCollections, listCollectionProducts]
+  key_fields: [id, title, handle, description, image, products_count, published_at, updated_at]
+- name: Cart
+  description: A buyer's in-progress basket. In the 2026-04 schema the cart IS the checkout — there is no Checkout type.
+  surfaces: [graphql, mcp]
+  key_fields: [id, lines, buyerIdentity, attributes, note, discountCodes, deliveryGroups, cost, checkoutUrl, totalQuantity]
+  mutations: 24
+- name: CartLine
+  description: One merchandise line on a cart. Supports bundle parent/child nesting.
+  surfaces: [graphql, mcp]
+  key_fields: [id, quantity, merchandise, attributes, cost, sellingPlanAllocation]
+- name: BuyerIdentity
+  description: The buyer's identity and delivery context attached to a cart.
+  surfaces: [graphql, mcp]
+  key_fields: [email, phone, countryCode, customer, deliveryAddressPreferences]
+- name: DeliveryGroup
+  description: A shipment grouping with its available and selected delivery options.
+  surfaces: [graphql, mcp]
+  key_fields: [id, deliveryOptions, selectedDeliveryOption, deliveryAddress]
+- name: Customer
+  description: A registered buyer. Managed via the Storefront customer mutations and the OIDC customer-account tier.
+  surfaces: [graphql, oidc]
+  key_fields: [id, email, firstName, lastName, phone, defaultAddress, addresses, orders]
+  note: 21 customer mutations exist; no MCP tool and no REST equivalent.
+- name: MailingAddress
+  description: A shipping or billing address belonging to a customer or cart.
+  surfaces: [graphql]
+- name: Order
+  description: A completed purchase.
+  surfaces: [oidc-customer-account]
+  note: >-
+    Not readable on the anonymous Storefront surface. The UCP get_order tool and
+    the Customer Account API both require the customer-account scopes.
+- name: Blog
+  description: The HyperHub editorial blog at /blogs/hyperhub.
+  surfaces: [graphql]
+  graphql_fields: [blog, blogByHandle, blogs]
+- name: Article
+  description: A HyperHub post.
+  surfaces: [graphql]
+  graphql_fields: [article, articles]
+- name: Page
+  description: A CMS page (about-us, patents, accessibility, recovery-rooms, retail-partners...).
+  surfaces: [graphql]
+  graphql_fields: [page, pageByHandle, pages]
+- name: Metaobject
+  description: Custom structured content objects defined by the store.
+  surfaces: [graphql]
+- name: Metafield
+  description: Custom key/value data attached to products, collections, carts and customers.
+  surfaces: [graphql]
+- name: Menu
+  description: Storefront navigation structure.
+  surfaces: [graphql]
+- name: Location
+  description: Physical store/pickup locations.
+  surfaces: [graphql]
+- name: SellingPlan
+  description: Subscription or deferred-purchase plan attachable to a variant.
+  surfaces: [graphql]
+relationships:
+- {from: Shop, to: Collection, type: has_many, via: collections}
+- {from: Shop, to: Product, type: has_many, via: products}
+- {from: Shop, to: Blog, type: has_many, via: blogs}
+- {from: Shop, to: Page, type: has_many, via: pages}
+- {from: Shop, to: Location, type: has_many, via: locations}
+- {from: Product, to: ProductVariant, type: has_many, via: variants}
+- {from: ProductVariant, to: Product, type: belongs_to, via: product_id}
+- {from: Product, to: Image, type: has_many, via: images}
+- {from: Image, to: Product, type: belongs_to, via: product_id}
+- {from: Image, to: ProductVariant, type: has_many, via: variant_ids}
+- {from: ProductVariant, to: Image, type: has_one, via: featured_image}
+- {from: Product, to: ProductOption, type: has_many, via: options}
+- {from: Collection, to: Product, type: has_many, via: products}
+- {from: Collection, to: Image, type: has_one, via: image}
+- {from: Cart, to: CartLine, type: has_many, via: lines}
+- {from: CartLine, to: ProductVariant, type: belongs_to, via: merchandise}
+- {from: CartLine, to: CartLine, type: has_many, via: parent line nesting (bundles)}
+- {from: CartLine, to: SellingPlan, type: has_one, via: sellingPlanAllocation}
+- {from: Cart, to: BuyerIdentity, type: has_one, via: buyerIdentity}
+- {from: Cart, to: DeliveryGroup, type: has_many, via: deliveryGroups}
+- {from: Cart, to: Metafield, type: has_many, via: metafields}
+- {from: BuyerIdentity, to: Customer, type: has_one, via: customer}
+- {from: BuyerIdentity, to: MailingAddress, type: has_many, via: deliveryAddressPreferences}
+- {from: DeliveryGroup, to: MailingAddress, type: has_one, via: deliveryAddress}
+- {from: Customer, to: MailingAddress, type: has_many, via: addresses}
+- {from: Customer, to: MailingAddress, type: has_one, via: defaultAddress}
+- {from: Customer, to: Order, type: has_many, via: orders}
+- {from: Cart, to: Order, type: has_one, via: cartSubmitForCompletion}
+- {from: Blog, to: Article, type: has_many, via: articles}
+- {from: Product, to: Metafield, type: has_many, via: metafields}
+lifecycle_path:
+  description: The order of operations an agent follows from discovery to a placed order.
+  steps:
+  - Product / Collection (discover)
+  - Cart (cartCreate)
+  - CartLine (cartLinesAdd)
+  - BuyerIdentity (cartBuyerIdentityUpdate)
+  - DeliveryGroup (cartDeliveryAddressesAdd, cartSelectedDeliveryOptionsUpdate)
+  - Cart ready (cartPrepareForCompletion)
+  - Order (cartSubmitForCompletion — requires buyer approval)
+coverage:
+  entities: 20
+  relationships: 30
+  graphql_types_total: 424
+  entities_on_public_rest: 5
+render: null
+x-evidence:
+  fetched: '2026-07-31'
+  graphql_introspection: {url: 'https://hyperice.com/api/2026-04/graphql.json', http_status: 200, types: 424}
+  rest_shape_probes:
+  - {url: 'https://hyperice.com/products.json?limit=1', http_status: 200, note: 'product/variant/image/option key sets read from the live response'}
+  - {url: 'https://hyperice.com/collections.json?limit=1', http_status: 200}

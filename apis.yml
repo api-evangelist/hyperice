@@ -1,18 +1,103 @@
 aid: hyperice
 name: Hyperice
-description: 'Hyperice is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Hyperice is a recovery and movement-enhancement technology company founded in
+  2010 and headquartered in Irvine, California, known for the Hypervolt
+  percussion massage line, the Normatec dynamic air-compression systems it
+  acquired in 2020, and the Venom thermal/vibration wearables. Its API surface is
+  not a developer platform but an agentic-commerce storefront: hyperice.com runs
+  on Shopify and publishes a machine-readable agent contract at /llms.txt and
+  /agents.md, a Universal Commerce Protocol (UCP) merchant profile at
+  /.well-known/ucp, a live MCP shopping server at /api/ucp/mcp, a fully
+  introspectable Shopify Storefront GraphQL API, OIDC/OAuth2 customer accounts at
+  accounts.hyperice.com, and an unauthenticated read-only product and collection
+  JSON surface.
 url: https://raw.githubusercontent.com/api-evangelist/hyperice/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment-pass
+image: https://hyperice.com/cdn/shop/files/hyperice-social-share.jpg?v=1775020762&width=1200
 specificationVersion: '0.20'
 created: '2026-07-31'
 modified: '2026-07-31'
 tags:
 - Company
-apis: []
+- Commerce
+- Retail
+- Health and Wellness
+- Consumer Hardware
+- Sports and Fitness
+- Agentic Commerce
+- GraphQL
+- MCP
+- Shopify
+apis:
+- name: Hyperice Storefront GraphQL API
+  description: >-
+    The Shopify Storefront GraphQL API served on Hyperice's own domain. Full
+    introspection succeeded unauthenticated on 2026-07-31 — 424 types, 35
+    QueryRoot fields, 41 Mutation fields — making this the richest
+    machine-readable contract Hyperice serves, and the only surface with write
+    capability (carts, customer accounts, Shop Pay payment requests).
+  humanURL: https://hyperice.com/agents.md
+  baseURL: https://hyperice.com/api/2026-04/graphql.json
+  tags:
+  - GraphQL
+  - Commerce
+  - Catalog
+  - Cart
+  properties:
+  - type: GraphQL
+    url: graphql/hyperice-storefront.graphql
+  - type: Authentication
+    url: authentication/hyperice-authentication.yml
+  - type: RateLimits
+    url: rate-limits/hyperice-rate-limits.yml
+  - type: ErrorCatalog
+    url: errors/hyperice-problem-types.yml
+  - type: DataModel
+    url: data-model/hyperice-data-model.yml
+- name: Hyperice UCP Shopping MCP Server
+  description: >-
+    A live MCP (JSON-RPC 2.0 over HTTP) server implementing the Universal
+    Commerce Protocol shopping service, declared by Hyperice's own
+    /.well-known/ucp merchant profile and advertised to agents in /llms.txt.
+    Exposes 13 catalog, cart, checkout and order tools. tools/list is reachable
+    but gated behind a resolvable UCP agent profile URI.
+  humanURL: https://hyperice.com/llms.txt
+  baseURL: https://hyperice.com/api/ucp/mcp
+  tags:
+  - MCP
+  - Agentic Commerce
+  - UCP
+  - Checkout
+  properties:
+  - type: MCPServer
+    url: mcp/hyperice-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/hyperice-tool-crosswalk.yml
+  - type: AgenticAccess
+    url: agentic-access/hyperice-agentic-access.yml
+- name: Hyperice Storefront JSON API
+  description: >-
+    The unauthenticated read-only product and collection JSON surface Hyperice
+    documents to agents in /agents.md under "Read-Only Browsing (No
+    Authentication Required)" — /products.json, /products/{handle}.json,
+    /collections.json and /collections/{handle}/products.json, plus the
+    discovery documents.
+  humanURL: https://hyperice.com/agents.md
+  baseURL: https://hyperice.com
+  tags:
+  - REST
+  - Catalog
+  - Products
+  - Read Only
+  properties:
+  - type: OpenAPI
+    url: openapi/hyperice-storefront-openapi.yml
+  - type: Overlay
+    url: overlays/hyperice-storefront-overlay.yaml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +105,85 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
+  url: https://hyperice.com/
+- type: SecondaryMarket
   url: https://forgeglobal.com/hyperice_stock/
+- type: Documentation
+  url: https://hyperice.com/agents.md
+- type: APIReference
+  url: https://ucp.dev/2026-04-08/specification/overview/
+- type: GettingStarted
+  url: https://hyperice.com/llms.txt
+- type: LLMsTxt
+  url: llms/hyperice-llms.txt
+- type: AgentInstructions
+  url: llms/hyperice-agents.md
+- type: MCPServer
+  url: mcp/hyperice-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/hyperice-tool-crosswalk.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/hyperice-agentic-access.yml
+- type: GraphQL
+  url: graphql/hyperice-storefront.graphql
+- type: OpenAPI
+  url: openapi/hyperice-storefront-openapi.yml
+- type: Overlay
+  url: overlays/hyperice-storefront-overlay.yaml
+- type: WellKnown
+  url: well-known/hyperice-well-known.yml
+- type: Authentication
+  url: authentication/hyperice-authentication.yml
+- type: OAuthScopes
+  url: scopes/hyperice-scopes.yml
+- type: OpenIDConnect
+  url: well-known/hyperice-openid-configuration.json
+- type: Conventions
+  url: conventions/hyperice-conventions.yml
+- type: Idempotency
+  url: conventions/hyperice-conventions.yml
+- type: RateLimits
+  url: rate-limits/hyperice-rate-limits.yml
+- type: ErrorCatalog
+  url: errors/hyperice-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/hyperice-lifecycle.yml
+- type: DeclineCodes
+  url: errors/hyperice-decline-codes.yml
+- type: Packages
+  url: packages/hyperice-packages.yml
+- type: Conformance
+  url: conformance/hyperice-conformance.yml
+- type: DataModel
+  url: data-model/hyperice-data-model.yml
+- type: DomainSecurity
+  url: security/hyperice-domain-security.yml
+- type: Support
+  url: https://hyperice.com/pages/contact
+- type: HelpCenter
+  url: https://hyperice.zendesk.com/hc/en-us
+- type: Blog
+  url: https://hyperice.com/blogs/hyperhub
+- type: SignUp
+  url: https://accounts.hyperice.com/
+- type: TermsOfService
+  url: https://hyperice.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://hyperice.com/policies/privacy-policy
+- type: RefundPolicy
+  url: https://hyperice.com/policies/refund-policy
+- type: ShippingPolicy
+  url: https://hyperice.com/policies/shipping-policy
+- type: Accessibility
+  url: https://hyperice.com/pages/accessibility
+- type: Patents
+  url: https://hyperice.com/pages/patents
+- type: About
+  url: https://hyperice.com/pages/about-us
+x-enrichment:
+  date: '2026-07-31'
+  status: enriched
+  artifacts_added: 22
+  pass: local-v1

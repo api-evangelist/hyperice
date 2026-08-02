@@ -1,0 +1,331 @@
+openapi: 3.1.0
+info:
+  title: Hyperice Storefront API
+  version: '2026-04'
+  description: >-
+    The public, unauthenticated read surface of the Hyperice online store
+    (hyperice.com), a Shopify-hosted storefront. Every path in this document is
+    one that Hyperice itself publishes to agents in its own `/llms.txt` and
+    `/agents.md` ("Read-Only Browsing (No Authentication Required)"), plus the
+    store-level `/products.json` and `/collections.json` collections observed
+    live. Schemas were derived from real responses fetched on 2026-07-31 — no
+    field is invented.
+
+
+    This document is an API Evangelist derivation, not a Hyperice-published
+    contract. Hyperice publishes no OpenAPI of its own. The machine-readable
+    contracts Hyperice DOES publish are (a) the Shopify Storefront GraphQL
+    schema, live and introspectable at
+    https://hyperice.com/api/2026-04/graphql.json and captured in
+    `graphql/hyperice-storefront.graphql`, and (b) the UCP shopping service
+    declared at https://hyperice.com/.well-known/ucp and served over MCP at
+    https://hyperice.com/api/ucp/mcp.
+  contact:
+    name: Hyperice Customer Support
+    url: https://hyperice.com/
+  license:
+    name: Proprietary
+x-evidence:
+  fetched: '2026-07-31'
+  method: derived
+  documented_by:
+    - https://hyperice.com/llms.txt
+    - https://hyperice.com/agents.md
+  probed:
+    - {url: 'https://hyperice.com/products.json', status: 200, content_type: application/json}
+    - {url: 'https://hyperice.com/collections.json', status: 200, content_type: application/json}
+    - {url: 'https://hyperice.com/products/open-box-hypervolt-go-3.json', status: 200, content_type: application/json}
+    - {url: 'https://hyperice.com/collections/accessories/products.json', status: 200, content_type: application/json}
+    - {url: 'https://hyperice.com/products/does-not-exist-xyz.json', status: 404, content_type: application/json}
+  platform: Shopify
+servers:
+  - url: https://hyperice.com
+    description: Hyperice production storefront (US / primary domain)
+  - url: https://hypericeprod.myshopify.com
+    description: Canonical Shopify origin (declared in /.well-known/ucp)
+tags:
+  - name: Products
+    description: Product catalog read operations.
+  - name: Collections
+    description: Collection (category) read operations.
+  - name: Discovery
+    description: Agent- and crawler-facing discovery documents.
+paths:
+  /products.json:
+    get:
+      operationId: listProducts
+      summary: List published products
+      description: >-
+        Returns the store's published products. Paginated with `limit` (max 250)
+        and `page`. 68 products were published at the time of derivation.
+      tags: [Products]
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: A page of products.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [products]
+                properties:
+                  products:
+                    type: array
+                    items: {$ref: '#/components/schemas/Product'}
+              example:
+                products:
+                  - id: 9440344998102
+                    title: Open Box Hypervolt Go 2
+                    handle: open-box-hypervolt-go-3
+                    vendor: Hyperice
+                    product_type: Recovery Device
+  /products/{handle}.json:
+    get:
+      operationId: getProduct
+      summary: Get a single product by handle
+      description: >-
+        Returns one published product, keyed by its URL handle. Documented by
+        Hyperice at /agents.md as `GET /products/{handle}.json`.
+      tags: [Products]
+      parameters:
+        - $ref: '#/components/parameters/Handle'
+      responses:
+        '200':
+          description: The product.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [product]
+                properties:
+                  product: {$ref: '#/components/schemas/Product'}
+        '404':
+          description: >-
+            No published product with that handle. Observed to return an empty
+            body with `content-type: application/json`.
+  /collections.json:
+    get:
+      operationId: listCollections
+      summary: List published collections
+      tags: [Collections]
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: A page of collections.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [collections]
+                properties:
+                  collections:
+                    type: array
+                    items: {$ref: '#/components/schemas/Collection'}
+  /collections/{handle}/products.json:
+    get:
+      operationId: listCollectionProducts
+      summary: List products in a collection
+      description: >-
+        Returns the published products belonging to one collection. Documented
+        by Hyperice at /agents.md as `GET /collections/{handle}/products.json`.
+      tags: [Collections]
+      parameters:
+        - $ref: '#/components/parameters/Handle'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: A page of products in the collection.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [products]
+                properties:
+                  products:
+                    type: array
+                    items: {$ref: '#/components/schemas/Product'}
+        '404':
+          description: No such collection.
+  /sitemap.xml:
+    get:
+      operationId: getSitemap
+      summary: Get the sitemap index
+      description: >-
+        Sitemap index linking per-locale product, page, collection and blog
+        sitemaps, plus `sitemap_agentic_discovery.xml`, which points at
+        `/agents.md`.
+      tags: [Discovery]
+      responses:
+        '200':
+          description: Sitemap index XML.
+          content:
+            application/xml:
+              schema: {type: string}
+  /llms.txt:
+    get:
+      operationId: getLlmsTxt
+      summary: Get the agent instructions (llms.txt)
+      description: >-
+        Hyperice's published agent instructions. Mirrors `/agents.md`. Declares
+        UCP support, the MCP endpoint, and the read-only browsing surface.
+      tags: [Discovery]
+      responses:
+        '200':
+          description: llms.txt document.
+          content:
+            text/plain:
+              schema: {type: string}
+  /agents.md:
+    get:
+      operationId: getAgentsMd
+      summary: Get the canonical agent-facing store description
+      tags: [Discovery]
+      responses:
+        '200':
+          description: agents.md document.
+          content:
+            text/markdown:
+              schema: {type: string}
+  /.well-known/ucp:
+    get:
+      operationId: getUcpProfile
+      summary: Get the UCP merchant profile
+      description: >-
+        Universal Commerce Protocol discovery document: supported versions,
+        service endpoints (the MCP shopping service), capabilities, and payment
+        handlers.
+      tags: [Discovery]
+      responses:
+        '200':
+          description: UCP merchant profile.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/UcpProfile'}
+components:
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      description: Number of records per page. Maximum 250.
+      required: false
+      schema: {type: integer, minimum: 1, maximum: 250, default: 50}
+    Page:
+      name: page
+      in: query
+      description: 1-indexed page number.
+      required: false
+      schema: {type: integer, minimum: 1, default: 1}
+    Handle:
+      name: handle
+      in: path
+      description: The URL handle (slug) of the resource.
+      required: true
+      schema: {type: string}
+      example: open-box-hypervolt-go-3
+  schemas:
+    Product:
+      type: object
+      description: A published storefront product.
+      required: [id, title, handle]
+      properties:
+        id: {type: integer, format: int64, description: Shopify product id.}
+        title: {type: string}
+        handle:
+          type: string
+          description: URL slug; the key for the /products/{handle}.json operation.
+        body_html: {type: string, description: HTML product description.}
+        published_at: {type: string, format: date-time}
+        created_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}
+        vendor: {type: string, example: Hyperice}
+        product_type: {type: string, example: Recovery Device}
+        tags:
+          type: array
+          items: {type: string}
+        variants:
+          type: array
+          items: {$ref: '#/components/schemas/Variant'}
+        images:
+          type: array
+          items: {$ref: '#/components/schemas/Image'}
+        options:
+          type: array
+          items: {$ref: '#/components/schemas/Option'}
+    Variant:
+      type: object
+      description: A purchasable variant of a product.
+      required: [id, title, product_id]
+      properties:
+        id: {type: integer, format: int64}
+        title: {type: string}
+        option1: {type: [string, 'null']}
+        option2: {type: [string, 'null']}
+        option3: {type: [string, 'null']}
+        sku: {type: [string, 'null']}
+        requires_shipping: {type: boolean}
+        taxable: {type: boolean}
+        featured_image: {oneOf: [{$ref: '#/components/schemas/Image'}, {type: 'null'}]}
+        available: {type: boolean}
+        price: {type: string, description: Decimal string in the store currency (USD).}
+        grams: {type: integer}
+        compare_at_price: {type: [string, 'null']}
+        position: {type: integer}
+        product_id: {type: integer, format: int64, description: Reference to the parent Product.}
+        created_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}
+    Image:
+      type: object
+      required: [id, src]
+      properties:
+        id: {type: integer, format: int64}
+        created_at: {type: string, format: date-time}
+        position: {type: integer}
+        updated_at: {type: string, format: date-time}
+        product_id: {type: integer, format: int64, description: Reference to the parent Product.}
+        variant_ids:
+          type: array
+          description: Variants this image is attached to.
+          items: {type: integer, format: int64}
+        src: {type: string, format: uri}
+        width: {type: integer}
+        height: {type: integer}
+    Option:
+      type: object
+      properties:
+        name: {type: string}
+        position: {type: integer}
+        values:
+          type: array
+          items: {type: string}
+    Collection:
+      type: object
+      description: A published storefront collection.
+      required: [id, title, handle]
+      properties:
+        id: {type: integer, format: int64}
+        title: {type: string}
+        handle: {type: string}
+        description: {type: string}
+        published_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}
+        image: {oneOf: [{$ref: '#/components/schemas/Image'}, {type: 'null'}]}
+        products_count: {type: integer}
+    UcpProfile:
+      type: object
+      description: >-
+        Universal Commerce Protocol merchant profile as served at
+        /.well-known/ucp. Saved verbatim at well-known/hyperice-ucp.json.
+      properties:
+        ucp:
+          type: object
+          properties:
+            version: {type: string, example: '2026-04-08'}
+            supported_versions: {type: object, additionalProperties: {type: string, format: uri}}
+            services: {type: object}
+            capabilities: {type: object}
+            payment_handlers: {type: object}

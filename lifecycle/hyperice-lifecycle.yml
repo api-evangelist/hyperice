@@ -1,0 +1,97 @@
+generated: '2026-07-31'
+method: probed
+source:
+- https://hyperice.com/.well-known/ucp
+- graphql/hyperice-storefront.graphql
+- https://hyperice.com/api/2026-04/graphql.json
+description: >-
+  Hyperice publishes no versioning policy, deprecation policy, SLA or status page
+  of its own. What it does expose is a genuinely machine-readable version
+  lifecycle on two surfaces — a queryable supported-version list on GraphQL and a
+  declared supported-version map on UCP — plus an observable retirement
+  behaviour. Recorded from live probes; the absences are recorded as absences.
+versioning:
+- surface: graphql
+  scheme: date-based calendar version in the URI path
+  current: '2026-04'
+  pattern: 'https://hyperice.com/api/{YYYY-MM}/graphql.json'
+  supported: ['2025-10', '2026-01', '2026-04', '2026-07']
+  total_advertised: 6
+  unsupported_still_advertised: 2
+  discovery_query: 'query { publicApiVersions { handle supported displayName } }'
+  response_header: x-shopify-api-version
+  note: >-
+    publicApiVersions returns 6 versions, of which 4 report supported: true. The
+    API self-describes its own support window — the strongest lifecycle signal on
+    this provider's perimeter.
+- surface: mcp-ucp
+  scheme: date-based protocol version
+  current: '2026-04-08'
+  supported: ['2026-04-08', '2026-01-23']
+  discovery: GET /.well-known/ucp
+  note: >-
+    Each supported version is dereferenceable at its own URL
+    (https://hypericeprod.myshopify.com/.well-known/ucp/{version}).
+- surface: rest
+  scheme: unversioned
+  note: >-
+    The .json storefront endpoints carry no version segment and no version
+    header. A breaking change there would be unannounced and undetectable.
+deprecation:
+  policy_url: null
+  policy_published_by_hyperice: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  mechanism: version-window
+  observed_retirement_behaviour:
+    probe: 'POST https://hyperice.com/api/2019-01/graphql.json'
+    http_status: 404
+    body: '{"errors":[{"message":"Not Found","extensions":{"code":"NOT_FOUND"}}]}'
+    note: >-
+      Retired versions are removed outright rather than sunset with headers. A
+      client on a retired version fails hard, immediately, with no advance
+      warning in-band.
+  field_level_deprecation:
+    supported: true
+    mechanism: GraphQL @deprecated(reason:) directive
+    note: >-
+      The introspected schema carries per-field deprecation reasons, so
+      field-level deprecation IS machine-readable and is captured verbatim in
+      graphql/hyperice-storefront.graphql. This is the only place a deprecation
+      signal is actually published.
+  upstream_policy:
+    governed_by: Shopify API versioning
+    note: >-
+      The lifecycle above is Shopify platform behaviour surfaced under Hyperice's
+      hostnames. Hyperice publishes no policy of its own and makes no commitment
+      about it.
+sla:
+  url: null
+  uptime_target: null
+  published: false
+status_page:
+  url: null
+  published: false
+  note: >-
+    status.hyperice.com appears to answer HTTP 200 but is a false positive — a
+    wildcard AmazonS3 record 301-redirects every unprovisioned subdomain to
+    https://hyperice.com/. There is no status page. Verified 2026-07-31.
+support:
+  help_center: https://hyperice.zendesk.com/hc/en-us
+  contact: https://hyperice.com/pages/contact
+deprecated_operations: []
+maturity:
+  api_program: none
+  note: >-
+    Hyperice operates no developer program, publishes no developer portal, and
+    offers no API keys. Its machine-readable surface exists because it runs on
+    Shopify and has opted into the agentic-commerce layer, not because it
+    maintains an API product.
+x-evidence:
+  fetched: '2026-07-31'
+  probes:
+  - {url: 'https://hyperice.com/api/2026-04/graphql.json', body: 'publicApiVersions', http_status: 200, note: '6 versions, 4 supported'}
+  - {url: 'https://hyperice.com/api/2019-01/graphql.json', http_status: 404, note: 'retired version removed'}
+  - {url: 'https://hyperice.com/.well-known/ucp', http_status: 200, note: '2 supported UCP versions'}
+  - {url: 'https://status.hyperice.com/', http_status: 200, final_url: 'https://hyperice.com/', note: 'wildcard redirect false positive'}

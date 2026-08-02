@@ -1,0 +1,69 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Hyperice Storefront API
+  version: 1.0.0
+extends: openapi/hyperice-storefront-openapi.yml
+x-generated: '2026-07-31'
+x-method: generated
+x-note: >-
+  Hyperice publishes no OpenAPI. The document this overlay extends is itself an
+  API Evangelist derivation from paths Hyperice documents in /agents.md plus live
+  probes. These actions record the cross-surface context an integrator needs but
+  which no single spec can carry.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profiled: '2026-07-31'
+    x-apievangelist-surface-count: 3
+    x-apievangelist-provider-published-spec: false
+    x-agent-contract:
+      llms_txt: https://hyperice.com/llms.txt
+      agents_md: https://hyperice.com/agents.md
+      ucp_profile: https://hyperice.com/.well-known/ucp
+      mcp_endpoint: https://hyperice.com/api/ucp/mcp
+      graphql_endpoint: https://hyperice.com/api/2026-04/graphql.json
+    x-sibling-surfaces:
+    - {kind: GraphQL, artifact: graphql/hyperice-storefront.graphql, note: 'introspectable unauthenticated; the only write surface'}
+    - {kind: MCP, artifact: mcp/hyperice-mcp.yml, note: 'live, gated by UCP agent profile'}
+- target: $.info
+  update:
+    x-rate-limit-posture:
+      documented: false
+      headers_returned: []
+      artifact: rate-limits/hyperice-rate-limits.yml
+    x-idempotency:
+      supported_on_this_surface: false
+      reason: read-only surface
+      supported_elsewhere: [mcp-ucp, graphql-shop-pay]
+      artifact: conventions/hyperice-conventions.yml
+- target: $.paths['/products.json'].get
+  update:
+    x-pagination: {style: page-number, limit_max: 250, page_base: 1, total_count: false, next_link: false}
+    x-observed-catalog-size: 68
+    x-limitation: >-
+      Accepts no query term. Keyword search requires the GraphQL search /
+      predictiveSearch fields or the HTML /search?q= route.
+- target: $.paths['/products/{handle}.json'].get
+  update:
+    x-error-shape: >-
+      404 returns a zero-length body with content-type application/json — there
+      is no error document to parse.
+- target: $.paths['/.well-known/ucp'].get
+  update:
+    x-lead: >-
+      This document is the discovery entry point for the MCP shopping server and
+      the reason this provider has an agent posture at all.
+- target: $.components.schemas.Product
+  update:
+    x-identifier-warning: >-
+      id here is a bare 64-bit integer. The GraphQL surface returns base64
+      gid://shopify/Product/{id} global ids. The two are NOT interchangeable —
+      join across surfaces on `handle`.
+- target: $.components.schemas.Variant
+  update:
+    x-price-note: >-
+      price and compare_at_price are decimal STRINGS in the store currency (USD),
+      not numbers. Parse as decimal, never as float.
+    x-availability-note: >-
+      `available` is the stock flag; never present an unavailable variant as
+      purchasable.

@@ -1,0 +1,238 @@
+generated: '2026-07-31'
+method: derived
+source:
+  - mcp/hyperice-mcp.yml
+  - openapi/hyperice-storefront-openapi.yml
+  - graphql/hyperice-storefront.graphql
+description: >-
+  Hyperice exposes THREE overlapping-but-non-identical projections of one
+  commerce core: a UCP/MCP shopping service, a Shopify Storefront GraphQL API,
+  and a public read-only storefront JSON surface. None is a superset. This
+  crosswalk binds each MCP tool to its backing GraphQL field(s) and, where one
+  exists, the public REST operation, so MCP-only and REST-only capability is
+  recorded rather than silently dropped.
+surfaces:
+  rest:
+    file: openapi/hyperice-storefront-openapi.yml
+    base: https://hyperice.com
+    gated: false
+    note: >-
+      Read-only. Public, unauthenticated, no write operations exist. Derived by
+      API Evangelist from paths Hyperice documents in /agents.md plus live
+      probes; Hyperice publishes no OpenAPI.
+  graphql:
+    file: graphql/hyperice-storefront.graphql
+    endpoint: https://hyperice.com/api/2026-04/graphql.json
+    gated: false
+    introspection: open
+    note: >-
+      Full introspection succeeded UNAUTHENTICATED on 2026-07-31 (HTTP 200, 424
+      types, 35 QueryRoot fields, 41 Mutation fields). This is the richest
+      machine-readable contract Hyperice serves, and it is the only surface here
+      with write capability.
+  mcp:
+    file: mcp/hyperice-mcp.yml
+    endpoint: https://hyperice.com/api/ucp/mcp
+    gated: true
+    gate: ucp-agent-profile
+    note: >-
+      tools/list returns HTTP 422 invalid_profile_url without a resolvable UCP
+      agent profile URI. Tool names come from the OpenRPC schema Hyperice's own
+      /.well-known/ucp designates for this service, so the binding is by
+      published name/semantics, not by live introspection — confidence is set
+      accordingly.
+crosswalk:
+  - tool: search_catalog
+    category: catalog
+    rest: [listProducts, listCollectionProducts]
+    graphql: [search, predictiveSearch, products]
+    binding: rest+graphql
+    confidence: medium
+    note: >-
+      REST equivalent is partial — /products.json paginates the full catalog but
+      accepts no query term. Real keyword search on the public surface is
+      GraphQL `search(query:)`/`predictiveSearch`, or the HTML /search?q= route
+      Hyperice documents in /agents.md.
+  - tool: lookup_catalog
+    category: catalog
+    rest: [getProduct]
+    graphql: [nodes, productByHandle, product]
+    binding: rest+graphql
+    confidence: medium
+    note: >-
+      lookup_catalog is a BATCH lookup by identifier; the REST operation
+      getProduct resolves exactly one product and only by handle, never by id or
+      variant id. GraphQL `nodes(ids:)` is the true batch analogue.
+  - tool: get_product
+    category: catalog
+    rest: [getProduct]
+    graphql: [product, productByHandle]
+    binding: rest+graphql
+    confidence: high
+    note: >-
+      Closest 1:1 mapping in the crosswalk. GET /products/{handle}.json returns
+      the same product entity (id, title, handle, vendor, product_type,
+      variants[], images[], options[]) verified live.
+  - tool: create_cart
+    category: cart
+    rest: []
+    graphql: [cartCreate]
+    binding: graphql
+    confidence: high
+    note: No public REST write surface exists; cart creation is GraphQL-only.
+  - tool: get_cart
+    category: cart
+    rest: []
+    graphql: [cart]
+    binding: graphql
+    confidence: high
+  - tool: update_cart
+    category: cart
+    rest: []
+    graphql:
+      - cartLinesAdd
+      - cartLinesUpdate
+      - cartLinesRemove
+      - cartAttributesUpdate
+      - cartNoteUpdate
+      - cartBuyerIdentityUpdate
+      - cartDiscountCodesUpdate
+      - cartGiftCardCodesAdd
+      - cartGiftCardCodesRemove
+    binding: graphql
+    confidence: medium
+    note: >-
+      One MCP tool fans out to nine GraphQL mutations. The UCP tool takes a whole
+      cart patch; GraphQL splits the same intent per mutable facet.
+  - tool: cancel_cart
+    category: cart
+    rest: []
+    graphql: [cartRemovePersonalData]
+    binding: graphql
+    confidence: low
+    note: >-
+      No direct cart-delete mutation exists in the Storefront schema. Recorded
+      honestly as low confidence rather than forced onto an unrelated mutation.
+  - tool: create_checkout
+    category: checkout
+    rest: []
+    graphql: [cartCreate, cartPrepareForCompletion]
+    binding: graphql
+    confidence: low
+    note: >-
+      UCP models checkout as a first-class object; the 2026-04 Storefront schema
+      has no Checkout type — cart IS the checkout, promoted via
+      cartPrepareForCompletion. A genuine model divergence between the surfaces.
+  - tool: get_checkout
+    category: checkout
+    rest: []
+    graphql: [cart, cartCompletionAttempt]
+    binding: graphql
+    confidence: low
+    note: Same divergence as create_checkout.
+  - tool: update_checkout
+    category: checkout
+    rest: []
+    graphql:
+      - cartDeliveryAddressesAdd
+      - cartDeliveryAddressesUpdate
+      - cartDeliveryAddressesReplace
+      - cartSelectedDeliveryOptionsUpdate
+      - cartBillingAddressUpdate
+    binding: graphql
+    confidence: medium
+    note: Sets shipping address and delivery method, per the documented UCP flow step 5.
+  - tool: complete_checkout
+    category: checkout
+    rest: []
+    graphql: [cartSubmitForCompletion, cartPaymentUpdate]
+    binding: graphql
+    confidence: medium
+    consequence: physical
+    human_in_the_loop: required
+    note: >-
+      The only irreversible tool in the set — places a real order against a real
+      payment handler. Hyperice's llms.txt states agents must not complete
+      payment without explicit buyer consent.
+  - tool: cancel_checkout
+    category: checkout
+    rest: []
+    graphql: []
+    binding: none
+    confidence: low
+    note: No corresponding Storefront GraphQL mutation found in the introspected schema.
+  - tool: get_order
+    category: order
+    rest: []
+    graphql: []
+    binding: none
+    confidence: low
+    note: >-
+      Order retrieval is not on the Storefront API. It lives on the Customer
+      Account API, which is behind the OIDC issuer at accounts.hyperice.com
+      (scope customer-account-api:full).
+mcp_only:
+  - tool: create_checkout
+    reason: >-
+      UCP's Checkout object has no counterpart in the Shopify Storefront GraphQL
+      schema (no Checkout type in the 2026-04 introspection) and no public REST
+      write surface exists.
+  - tool: cancel_checkout
+    reason: No matching mutation on any public Hyperice surface.
+  - tool: get_order
+    reason: >-
+      Requires the authenticated Customer Account API at accounts.hyperice.com,
+      not the anonymous Storefront surfaces catalogued here.
+rest_only:
+  - operations: [listCollections]
+    capability: Collection browsing
+    reason: >-
+      UCP's shopping service has no collection/category tool; catalog access is
+      search-and-lookup shaped. Collections are reachable via REST
+      (/collections.json) and GraphQL (collections) but not via MCP.
+  - operations: [getSitemap, getLlmsTxt, getAgentsMd, getUcpProfile]
+    capability: Discovery documents
+    reason: >-
+      Crawler/agent discovery surface, deliberately outside the tool contract.
+graphql_only:
+  - fields: [blog, blogByHandle, blogs, article, articles]
+    capability: Editorial content (the HyperHub blog)
+    reason: No MCP tool and no public JSON endpoint; GraphQL only.
+  - fields: [page, pageByHandle, pages, menu, metaobject, metaobjects]
+    capability: CMS pages, navigation menus, metaobjects
+    reason: GraphQL only.
+  - fields: [localization, locations, urlRedirects, shopPayInstallmentsPricing, productRecommendations]
+    capability: Localization, store locations, redirects, financing, recommendations
+    reason: GraphQL only.
+  - fields: [customerCreate, customerUpdate, customerAccessTokenCreate, customerRecover, customerAddressCreate]
+    capability: Customer account management
+    reason: >-
+      21 customer mutations exist on GraphQL with no MCP tool and no REST
+      equivalent. This is the largest single surface divergence.
+coverage:
+  tools_named: 13
+  tools_bound_to_graphql: 11
+  tools_bound_to_rest: 3
+  tools_unbound: 2
+  mcp_only: 3
+  rest_operations_total: 8
+  rest_operations_with_a_tool: 3
+  graphql_queries_total: 35
+  graphql_mutations_total: 41
+  graphql_fields_with_a_tool: 24
+x-evidence:
+  fetched: '2026-07-31'
+  graphql_introspection:
+    url: https://hyperice.com/api/2026-04/graphql.json
+    http_status: 200
+    authenticated: false
+    types: 424
+  mcp_tools_list:
+    url: https://hyperice.com/api/ucp/mcp
+    http_status: 422
+    gated: true
+  caveat: >-
+    Because the live MCP tools/list is gated behind a UCP agent profile, every
+    tool→field binding below "high" is by published name and documented
+    semantics, not by comparing live inputSchemas. Confidence values reflect
+    that honestly.

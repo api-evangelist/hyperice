@@ -1,0 +1,124 @@
+generated: '2026-07-31'
+method: probed
+source: https://hyperice.com/.well-known/openid-configuration
+docs: https://hyperice.com/llms.txt
+description: >-
+  Hyperice's authentication profile is not derived from an OpenAPI — it publishes
+  no OpenAPI with securitySchemes. It is read from three live, anonymous
+  discovery documents Hyperice serves on its own domain: the OIDC discovery
+  document, the RFC 8414 OAuth authorization-server metadata (byte-identical to
+  the OIDC document on this store), and the RFC 9728 protected-resource
+  metadata. The result is a three-tier posture: an entirely unauthenticated
+  public read tier, an agent-identity-gated commerce tier, and an OIDC-protected
+  customer-account tier.
+summary:
+  types: [none, openIdConnect, oauth2, http]
+  oauth2_flows: [authorizationCode]
+  pkce: [S256]
+  api_key_in: []
+  bearer_methods: [header]
+  unauthenticated_surfaces: 2
+tiers:
+- tier: public-read
+  auth: none
+  surfaces:
+  - https://hyperice.com/products.json
+  - https://hyperice.com/products/{handle}.json
+  - https://hyperice.com/collections.json
+  - https://hyperice.com/collections/{handle}/products.json
+  - https://hyperice.com/api/2026-04/graphql.json
+  note: >-
+    Verified anonymous on 2026-07-31. Notably the Shopify Storefront GraphQL
+    endpoint answered a FULL introspection query with HTTP 200 and no
+    X-Shopify-Storefront-Access-Token header — this store operates its storefront
+    API in public (unauthenticated) access mode.
+- tier: agentic-commerce
+  auth: ucp-agent-profile
+  surfaces:
+  - https://hyperice.com/api/ucp/mcp
+  note: >-
+    The MCP endpoint requires the calling agent to present a resolvable UCP agent
+    profile URI before it will enumerate or invoke tools. An anonymous
+    tools/list returns HTTP 422, JSON-RPC error -32001 "UCP discovery failed",
+    data.code "invalid_profile_url". This is an agent-identity gate rather than a
+    bearer-token gate; a bearer token is layered on top for customer-scoped
+    operations per the protected-resource metadata below.
+- tier: customer-account
+  auth: openIdConnect
+  surfaces:
+  - https://accounts.hyperice.com/
+  note: Buyer sign-in, order history, and the customer-account MCP API.
+schemes:
+- name: HypericeCustomerAccounts
+  type: openIdConnect
+  openIdConnectUrl: https://hyperice.com/.well-known/openid-configuration
+  issuer: https://shopify.com/authentication/78618525910
+  sources: [well-known/hyperice-openid-configuration.json]
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://accounts.hyperice.com/authentication/oauth/authorize
+    tokenUrl: https://accounts.hyperice.com/authentication/oauth/token
+    scopes:
+      openid: Authenticate the buyer and issue an ID token.
+      email: Release the buyer's email address and email_verified claim.
+      customer-account-api:full: Full access to the Customer Account API on behalf of the buyer.
+      customer-account-mcp-api:full: Full access to the Customer Account MCP API on behalf of the buyer.
+  end_session_endpoint: https://accounts.hyperice.com/authentication/logout
+  jwks_uri: https://accounts.hyperice.com/authentication/.well-known/jwks.json
+  response_types_supported: [code]
+  grant_types_supported:
+  - authorization_code
+  - refresh_token
+  - 'urn:ietf:params:oauth:grant-type:jwt-bearer'
+  token_endpoint_auth_methods_supported: [client_secret_basic]
+  code_challenge_methods_supported: [S256]
+  id_token_signing_alg_values_supported: [RS256]
+  subject_types_supported: [public]
+  claims_supported: [iss, sub, aud, exp, iat, nonce, sid, email, email_verified]
+- name: HypericeProtectedResource
+  type: http
+  scheme: bearer
+  sources: [well-known/hyperice-oauth-protected-resource.json]
+  resource: https://hyperice.com
+  authorization_servers:
+  - https://accounts.hyperice.com
+  - https://shopify.com/authentication/78618525910
+  bearer_methods_supported: [header]
+  spec: RFC 9728 OAuth 2.0 Protected Resource Metadata
+- name: UCPAgentProfile
+  type: agent-identity
+  sources: [well-known/hyperice-ucp.json, mcp/hyperice-mcp.yml]
+  description: >-
+    Non-standard-to-OAuth agent identity gate on the UCP MCP endpoint. The agent
+    must publish a fetchable UCP agent profile document and present its URI;
+    Hyperice's server dereferences it before serving tools.
+  observed_error:
+    http_status: 422
+    jsonrpc_code: -32001
+    message: UCP discovery failed
+    data_code: invalid_profile_url
+- name: ShopifyStorefrontPublicAccess
+  type: none
+  sources: [graphql/hyperice-storefront.graphql]
+  description: >-
+    The Storefront GraphQL API is served in public access mode — no
+    X-Shopify-Storefront-Access-Token is required. An optional
+    Shopify-Storefront-Buyer-IP header is documented in the schema for
+    server-side callers so per-IP throttling attributes to the buyer rather than
+    the caller.
+notes:
+- >-
+  There is no API-key surface anywhere on Hyperice's public perimeter — no
+  apiKey securityScheme, no developer key issuance, no key-management console.
+- >-
+  Hyperice operates no developer program of its own; every authenticated surface
+  is Shopify-operated infrastructure served under Hyperice's own hostnames
+  (hyperice.com, accounts.hyperice.com).
+x-evidence:
+  fetched: '2026-07-31'
+  probes:
+  - {url: 'https://hyperice.com/.well-known/openid-configuration', http_status: 200, content_type: 'application/json'}
+  - {url: 'https://hyperice.com/.well-known/oauth-authorization-server', http_status: 200, content_type: 'application/json'}
+  - {url: 'https://hyperice.com/.well-known/oauth-protected-resource', http_status: 200, content_type: 'application/json'}
+  - {url: 'https://hyperice.com/api/2026-04/graphql.json', method: POST, http_status: 200, authenticated: false, note: 'full introspection, 424 types'}
+  - {url: 'https://hyperice.com/api/ucp/mcp', method: POST, http_status: 422, note: 'invalid_profile_url'}

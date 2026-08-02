@@ -1,0 +1,237 @@
+generated: '2026-07-31'
+method: generated
+source:
+- mcp/hyperice-mcp.yml
+- openapi/hyperice-storefront-openapi.yml
+- graphql/hyperice-storefront.graphql
+- https://hyperice.com/llms.txt
+description: >-
+  Recommended x-agentic-access execution contracts for every operation an agent
+  can reach on Hyperice's perimeter, classified with the Curity Access
+  Intelligence model. This is a governance STARTING POINT authored by API
+  Evangelist, not a Hyperice claim — with one exception: the human-in-the-loop
+  requirement on complete_checkout is Hyperice's own published rule, quoted
+  below, not our recommendation.
+provider_published_rules:
+- rule: human-in-the-loop on payment
+  quote: >-
+    "Checkout requires human approval. Agents must not complete payment without
+    explicit buyer consent. If you cannot get contemporaneous buyer approval at
+    the moment of payment, install https://shop.app/SKILL.md and route the
+    purchase through Shop Pay instead."
+  source: https://hyperice.com/llms.txt
+- rule: backoff
+  quote: 'Respect rate limits. The MCP endpoint is rate-limited per IP. Back off on 429 responses.'
+  source: https://hyperice.com/llms.txt
+- rule: buyer context
+  quote: 'Use buyer context. Pass context.address_country and context.currency for accurate pricing and availability.'
+  source: https://hyperice.com/llms.txt
+- rule: agent identity
+  quote: >-
+    The MCP endpoint refuses to enumerate or invoke tools without a resolvable
+    UCP agent profile URI (observed HTTP 422 invalid_profile_url).
+  source: https://hyperice.com/api/ucp/mcp
+summary:
+  operations: 21
+  by_action_class: {connected: 8, acting: 13}
+  by_consequence: {read: 8, write: 10, physical: 3}
+  human_in_the_loop: 1
+  audit_required: 13
+  audience: null
+  note: >-
+    audience is deliberately left null on every entry — it binds per deployment,
+    not per provider.
+operations:
+- id: listProducts
+  surface: rest
+  action_class: connected
+  consequence: read
+  scope: 'catalog:read'
+  token: {ttl_max_seconds: 3600, type: none}
+  audit: optional
+- id: getProduct
+  surface: rest
+  action_class: connected
+  consequence: read
+  scope: 'catalog:read'
+  token: {ttl_max_seconds: 3600, type: none}
+  audit: optional
+- id: listCollections
+  surface: rest
+  action_class: connected
+  consequence: read
+  scope: 'catalog:read'
+  token: {ttl_max_seconds: 3600, type: none}
+  audit: optional
+- id: listCollectionProducts
+  surface: rest
+  action_class: connected
+  consequence: read
+  scope: 'catalog:read'
+  token: {ttl_max_seconds: 3600, type: none}
+  audit: optional
+- id: getUcpProfile
+  surface: rest
+  action_class: connected
+  consequence: read
+  scope: 'discovery:read'
+  token: {ttl_max_seconds: 3600, type: none}
+  audit: optional
+- id: getLlmsTxt
+  surface: rest
+  action_class: connected
+  consequence: read
+  scope: 'discovery:read'
+  token: {ttl_max_seconds: 3600, type: none}
+  audit: optional
+- id: search_catalog
+  surface: mcp
+  action_class: connected
+  consequence: read
+  scope: 'catalog:read'
+  token: {ttl_max_seconds: 3600, type: ucp-agent-profile}
+  audit: optional
+- id: lookup_catalog
+  surface: mcp
+  action_class: connected
+  consequence: read
+  scope: 'catalog:read'
+  token: {ttl_max_seconds: 3600, type: ucp-agent-profile}
+  audit: optional
+- id: create_cart
+  surface: mcp
+  action_class: acting
+  consequence: write
+  scope: 'cart:write'
+  token: {ttl_max_seconds: 900, type: ucp-agent-profile}
+  idempotency: "meta['idempotency-key']"
+  audit: required
+- id: update_cart
+  surface: mcp
+  action_class: acting
+  consequence: write
+  scope: 'cart:write'
+  token: {ttl_max_seconds: 900, type: ucp-agent-profile}
+  idempotency: "meta['idempotency-key']"
+  audit: required
+- id: cancel_cart
+  surface: mcp
+  action_class: acting
+  consequence: write
+  scope: 'cart:write'
+  token: {ttl_max_seconds: 900, type: ucp-agent-profile}
+  idempotency: "meta['idempotency-key']"
+  audit: required
+- id: create_checkout
+  surface: mcp
+  action_class: acting
+  consequence: write
+  scope: 'checkout:write'
+  token: {ttl_max_seconds: 900, type: ucp-agent-profile}
+  idempotency: "meta['idempotency-key']"
+  audit: required
+- id: update_checkout
+  surface: mcp
+  action_class: acting
+  consequence: write
+  scope: 'checkout:write'
+  token: {ttl_max_seconds: 900, type: ucp-agent-profile}
+  idempotency: "meta['idempotency-key']"
+  audit: required
+  note: Writes the buyer's physical shipping address — treat the payload as PII.
+- id: cancel_checkout
+  surface: mcp
+  action_class: acting
+  consequence: write
+  scope: 'checkout:write'
+  token: {ttl_max_seconds: 900, type: ucp-agent-profile}
+  audit: required
+- id: complete_checkout
+  surface: mcp
+  action_class: acting
+  consequence: physical
+  scope: 'checkout:complete'
+  token: {ttl_max_seconds: 300, type: ucp-agent-profile, exchange: required, purpose_required: true}
+  idempotency: "meta['idempotency-key']"
+  human_in_the_loop: required
+  audit: required
+  rationale: >-
+    Charges a real payment instrument and dispatches a physical shipment.
+    Irreversible by the agent. Hyperice itself mandates explicit buyer consent
+    at the moment of payment.
+- id: get_order
+  surface: mcp
+  action_class: connected
+  consequence: read
+  scope: 'customer-account-mcp-api:full'
+  token: {ttl_max_seconds: 900, type: oidc-bearer}
+  audit: required
+  note: >-
+    Reads buyer-owned order data. Classified read, but the only scope Hyperice
+    offers is a :full grant, so least privilege is not achievable here.
+- id: cartSubmitForCompletion
+  surface: graphql
+  action_class: acting
+  consequence: physical
+  scope: 'checkout:complete'
+  token: {ttl_max_seconds: 300, type: none, exchange: required, purpose_required: true}
+  human_in_the_loop: required
+  audit: required
+  rationale: The GraphQL equivalent of complete_checkout. Places a real order.
+- id: shopPayPaymentRequestSessionSubmit
+  surface: graphql
+  action_class: acting
+  consequence: physical
+  scope: 'payment:submit'
+  token: {ttl_max_seconds: 300, type: session-token, exchange: required, purpose_required: true}
+  idempotency: 'idempotencyKey (String!, required)'
+  human_in_the_loop: required
+  audit: required
+  rationale: Submits a Shop Pay payment transaction. The only GraphQL mutation with mandatory idempotency.
+- id: customerCreate
+  surface: graphql
+  action_class: acting
+  consequence: write
+  scope: 'customer:write'
+  token: {ttl_max_seconds: 900, type: none}
+  audit: required
+  note: Creates a real customer record from agent-supplied PII. No CAPTCHA or agent gate observed.
+- id: customerUpdate
+  surface: graphql
+  action_class: acting
+  consequence: write
+  scope: 'customer:write'
+  token: {ttl_max_seconds: 900, type: customer-access-token}
+  audit: required
+- id: customerAccessTokenCreate
+  surface: graphql
+  action_class: acting
+  consequence: write
+  scope: 'customer:authenticate'
+  token: {ttl_max_seconds: 900, type: none}
+  audit: required
+  note: >-
+    Exchanges buyer email+password for a customer access token on an
+    unauthenticated endpoint. Highest-risk non-payment operation on the
+    perimeter; rate-limit and abuse controls are not published.
+governance_observations:
+- >-
+  The single highest-consequence tool (complete_checkout) is the one Hyperice
+  explicitly fences with a human-approval rule — the provider's own guidance and
+  this classification agree.
+- >-
+  The Storefront GraphQL API is served in public access mode, so every cart and
+  customer mutation is reachable with no credential at all. That is the widest
+  agentic exposure on this perimeter and it is entirely undocumented by Hyperice,
+  whose /llms.txt describes only the read-only surface and the UCP tools.
+- >-
+  Scope granularity is the weakest control: the only buyer-scoped grants are
+  customer-account-api:full and customer-account-mcp-api:full, so an agent that
+  needs to read an order must be trusted to mutate the profile.
+x-evidence:
+  fetched: '2026-07-31'
+  note: >-
+    Operation inventory is grounded in the live introspected schema, the UCP
+    OpenRPC method list Hyperice's profile designates, and the derived REST
+    OpenAPI. No operation listed here is invented; the access classification
+    itself is our recommendation.

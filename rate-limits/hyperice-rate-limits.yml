@@ -1,0 +1,70 @@
+generated: '2026-07-31'
+method: probed
+source:
+- https://hyperice.com/llms.txt
+- graphql/hyperice-storefront.graphql
+description: >-
+  Hyperice publishes no numeric rate-limit table. What it does publish is
+  in-band throttle signalling on the GraphQL surface and a plain-language backoff
+  instruction to agents. Recorded here as observed, with the absence of numbers
+  stated rather than guessed.
+limits: []
+signalling:
+- surface: graphql
+  mechanism: query-cost extension
+  field: extensions.cost.requestedQueryCost
+  observed: 3
+  observed_on: 'query { shop { name description primaryDomain { url } paymentSettings { currencyCode countryCode } } }'
+  note: >-
+    Cost is returned on every response. The store did not return a
+    throttleStatus/currentlyAvailable budget on public (unauthenticated) access,
+    so the remaining-budget half of the standard Shopify cost object is not
+    visible to anonymous callers.
+- surface: graphql
+  mechanism: typed union member
+  members:
+  - {type: CartThrottled, returned_by: cartPrepareForCompletion, description: 'Response signifying that the access to cart request is currently being throttled.'}
+  - {type: SubmitThrottled, returned_by: cartSubmitForCompletion, description: 'Cart submit for checkout completion is throttled.'}
+  note: >-
+    Throttling on the checkout path is modelled in the type system rather than as
+    an HTTP status. An agent that only branches on HTTP 429 will silently
+    mis-handle a throttled checkout submission — it arrives as a 200 whose union
+    result is SubmitThrottled.
+- surface: graphql
+  mechanism: buyer-attribution header
+  header: Shopify-Storefront-Buyer-IP
+  case_sensitive: true
+  applies_to: [cartSubmitForCompletion]
+  spec_text: >-
+    "This mutation is throttled by IP. With private access, you can provide a
+    Shopify-Storefront-Buyer-IP header instead of the request IP."
+  warning: >-
+    The schema itself warns: "Ensure the value provided to
+    Shopify-Storefront-Buyer-IP is trusted. Unthrottled access to this mutation
+    presents a security risk."
+- surface: mcp-ucp
+  mechanism: HTTP status
+  status: 429
+  spec_text: >-
+    "Respect rate limits. The MCP endpoint is rate-limited per IP. Back off on
+    429 responses." (hyperice.com/llms.txt)
+  numeric_limit: not published
+- surface: rest
+  mechanism: not published
+  note: >-
+    No X-RateLimit-*, no Retry-After, and no 429 observed across the probes run.
+    Shopify applies platform-level protection to the storefront JSON endpoints
+    but neither Shopify nor Hyperice documents a number for them.
+headers_observed:
+  present: [x-request-id, x-shopify-api-version]
+  absent: [x-ratelimit-limit, x-ratelimit-remaining, x-ratelimit-reset, retry-after]
+scope: per-IP
+plans: []
+note: >-
+  There are no API plans or paid tiers. The commerce surfaces are free to call;
+  the monetization is the physical product, not the API.
+x-evidence:
+  fetched: '2026-07-31'
+  probes:
+  - {url: 'https://hyperice.com/api/2026-04/graphql.json', method: POST, http_status: 200, note: 'extensions.cost.requestedQueryCost = 3; no rate-limit headers'}
+  - {url: 'https://hyperice.com/products.json', method: GET, http_status: 200, note: 'no rate-limit headers'}

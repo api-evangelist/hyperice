@@ -1,0 +1,176 @@
+generated: '2026-07-31'
+method: probed
+source:
+- well-known/hyperice-openid-configuration.json
+- well-known/hyperice-oauth-protected-resource.json
+- well-known/hyperice-ucp.json
+- graphql/hyperice-storefront.graphql
+description: >-
+  Cross-cutting standards Hyperice's public perimeter does and does not conform
+  to, each entry backed by a live observation rather than a marketing claim.
+  Hyperice makes no compliance claims of its own anywhere on its site — no trust
+  center, no certifications page, no SOC 2 or ISO statement was found.
+standards:
+- id: ucp-2026-04-08
+  name: Universal Commerce Protocol
+  conforms: true
+  evidence: >-
+    /.well-known/ucp returns HTTP 200 declaring version 2026-04-08 (plus
+    2026-01-23), the dev.ucp.shopping service over MCP transport, and eight
+    capabilities.
+  spec: https://ucp.dev/2026-04-08/specification/overview/
+- id: mcp
+  name: Model Context Protocol
+  conforms: true
+  evidence: >-
+    https://hyperice.com/api/ucp/mcp answers JSON-RPC 2.0 POSTs with well-formed
+    MCP error objects. Live but gated behind a UCP agent profile.
+- id: jsonrpc-2.0
+  name: JSON-RPC 2.0
+  conforms: true
+  evidence: 'MCP endpoint returns {"jsonrpc":"2.0","id":1,"error":{"code":-32001,...}}'
+- id: openrpc-1.3.2
+  name: OpenRPC
+  conforms: true
+  evidence: >-
+    Hyperice's own UCP profile designates
+    https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json (OpenRPC 1.3.2,
+    13 methods) as the schema for its shopping service.
+  note: The document is published by UCP, not by Hyperice.
+- id: graphql
+  name: GraphQL (June 2018 spec)
+  conforms: true
+  evidence: >-
+    Full introspection succeeded unauthenticated — 424 types, QueryRoot with 35
+    fields, Mutation with 41 fields.
+- id: relay-cursor-connections
+  name: GraphQL Cursor Connections Specification
+  conforms: true
+  evidence: >-
+    38 connection fields using first/last/after/before with
+    edges/node/cursor/pageInfo.
+- id: oidc-discovery
+  name: OpenID Connect Discovery 1.0
+  conforms: true
+  evidence: >-
+    /.well-known/openid-configuration returns a valid discovery document with
+    issuer, authorization_endpoint, token_endpoint, jwks_uri, scopes_supported,
+    response_types_supported and id_token_signing_alg_values_supported.
+- id: oauth2-authorization-code
+  name: OAuth 2.0 authorization code grant
+  conforms: true
+  evidence: 'grant_types_supported includes authorization_code and refresh_token; response_types_supported is [code].'
+- id: rfc7636-pkce
+  name: RFC 7636 PKCE
+  conforms: true
+  evidence: 'code_challenge_methods_supported: [S256]'
+- id: rfc8414-as-metadata
+  name: RFC 8414 OAuth 2.0 Authorization Server Metadata
+  conforms: true
+  evidence: /.well-known/oauth-authorization-server returns HTTP 200 with valid metadata.
+- id: rfc9728-protected-resource-metadata
+  name: RFC 9728 OAuth 2.0 Protected Resource Metadata
+  conforms: true
+  evidence: >-
+    /.well-known/oauth-protected-resource returns resource, authorization_servers[]
+    and bearer_methods_supported.
+- id: rfc7523-jwt-bearer
+  name: RFC 7523 JWT bearer grant
+  conforms: true
+  evidence: "grant_types_supported includes urn:ietf:params:oauth:grant-type:jwt-bearer"
+- id: idempotency-key
+  name: Idempotency-Key (IETF draft semantics)
+  conforms: true
+  evidence: >-
+    UCP meta['idempotency-key'] — "Unique key for retry safety. Maps to HTTP
+    Idempotency-Key header." GraphQL shopPayPaymentRequestSessionSubmit takes a
+    required idempotencyKey and raises IDEMPOTENCY_KEY_ALREADY_USED.
+  partial: true
+  note: Idempotency is present on the payment path and on UCP methods, but not on GraphQL cart mutations.
+- id: llmstxt
+  name: llms.txt
+  conforms: true
+  evidence: https://hyperice.com/llms.txt returns HTTP 200 with a conforming agent-instructions document.
+- id: agents-md
+  name: AGENTS.md / agents.md convention
+  conforms: true
+  evidence: >-
+    https://hyperice.com/agents.md returns HTTP 200 and is listed as the sole
+    entry of https://hyperice.com/sitemap_agentic_discovery.xml.
+- id: sitemaps-0.9
+  name: Sitemaps protocol 0.9
+  conforms: true
+  evidence: /sitemap.xml is a valid sitemapindex across 17 locales.
+- id: rfc8615-well-known
+  name: RFC 8615 well-known URIs
+  conforms: true
+  evidence: Four documents served under /.well-known/.
+- id: a2a
+  name: A2A Agent Card
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json -> 404 and /.well-known/agent.json -> 404 on
+    hyperice.com. No agent card is published.
+- id: rfc9457-problem-details
+  name: RFC 9457 Problem Details
+  conforms: false
+  evidence: >-
+    No surface returns application/problem+json. REST 404s return a zero-length
+    body; GraphQL uses errors[]/userErrors; MCP uses JSON-RPC error objects.
+- id: rfc9116-security-txt
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: /.well-known/security.txt -> 404
+- id: rfc9727-api-catalog
+  name: RFC 9727 API Catalog
+  conforms: false
+  evidence: /.well-known/api-catalog -> 404
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: >-
+    No OpenAPI is published. /openapi.json and /swagger.json return 404 on
+    hyperice.com, and every candidate developer/docs/api subdomain is a wildcard
+    S3 redirect. openapi/hyperice-storefront-openapi.yml in this repo is an API
+    Evangelist derivation, not a Hyperice artifact.
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: No event, streaming or webhook surface is published on Hyperice's own perimeter.
+- id: rfc8594-sunset-header
+  name: RFC 8594 Sunset header
+  conforms: false
+  evidence: >-
+    Retired API versions return a hard 404 with no Sunset or Deprecation header.
+- id: dnssec
+  name: DNSSEC
+  conforms: false
+  evidence: 'security/hyperice-domain-security.yml: dnssec false for hyperice.com'
+- id: caa
+  name: DNS CAA records
+  conforms: false
+  evidence: 'security/hyperice-domain-security.yml: caa []'
+compliance_program:
+  published: false
+  trust_center: null
+  certifications: []
+  note: >-
+    No trust center, no certifications page and no compliance statement were
+    found. trust.hyperice.com answers 200 only because a wildcard S3 record
+    redirects it to the storefront homepage. Because nothing is published, no
+    Compliance pointer is emitted in apis.yml — asserting one would credit
+    Hyperice with a posture it has not claimed.
+  privacy_surface:
+  - https://hyperice.com/policies/privacy-policy
+  - https://hyperice.com/pages/data-sharing-opt-out
+  - https://hyperice.com/pages/do-not-sell
+  - https://hyperice.com/pages/data-request
+  - https://hyperice.com/pages/cookies
+  - https://hyperice.com/pages/cookie-declarations
+  privacy_note: >-
+    Hyperice does publish CCPA/CPRA-shaped consumer-rights pages (do-not-sell,
+    data-request, data-sharing-opt-out) — evidence of a privacy program, but not
+    of a certified security compliance program.
+x-evidence:
+  fetched: '2026-07-31'
+  method: live probes of every host and path named above

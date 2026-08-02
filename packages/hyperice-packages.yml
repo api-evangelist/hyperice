@@ -1,0 +1,44 @@
+generated: '2026-07-31'
+method: searched
+source: registry searches + GitHub org check
+description: >-
+  Hyperice publishes NO first-party client libraries. This file records the
+  negative result with its evidence so a later round does not re-run the same
+  searches. No SDKs pointer is emitted in apis.yml, because there is no SDK.
+packages: []
+registries_checked:
+- {registry: npm, query: hyperice, results: 0, url: 'https://registry.npmjs.org/-/v1/search?text=hyperice'}
+- {registry: pypi, package: hyperice, status: 404}
+- {registry: crates.io, package: hyperice, status: 403, note: 'registry blocked the anonymous probe; no crate surfaced in search either'}
+source_repositories:
+- host: github.com
+  org: hyper-ice
+  status: 200
+  public_repos: 0
+  affiliation: unrelated
+  evidence: >-
+    The GitHub org "hyper-ice" (id 68620284, created 2020-07-21) lists its blog
+    as moe.hyice.org and has zero public repositories. It is not Hyperice the
+    recovery-technology company. No GitHubOrganization pointer is wired in
+    apis.yml.
+- host: github.com
+  org: hyperice
+  status: not found
+client_libraries_available_elsewhere:
+  note: >-
+    Because the storefront runs on Shopify, generic Shopify Storefront API
+    clients (e.g. @shopify/storefront-api-client) will work against
+    https://hyperice.com/api/2026-04/graphql.json. These are Shopify packages,
+    not Hyperice packages, so they are deliberately NOT listed as packages
+    above — listing them would misattribute first-party status.
+mobile_applications:
+- name: Hyperice
+  platform: iOS
+  url: https://apps.apple.com/us/app/hyperice/id1480841793
+  status: 200
+  note: >-
+    Consumer companion app that pairs with Bluetooth devices. Not a developer
+    artifact; no public SDK or device API accompanies it.
+  support_page: https://hyperice.com/pages/app-support-and-conditions
+x-evidence:
+  fetched: '2026-07-31'

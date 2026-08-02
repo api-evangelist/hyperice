@@ -1,0 +1,36 @@
+generated: '2026-07-31'
+method: generated
+source:
+- openapi/hyperice-storefront-openapi.yml
+- graphql/hyperice-storefront.graphql
+- mcp/hyperice-mcp.yml
+- https://hyperice.com/llms.txt
+description: >-
+  Packaged Agent Skills for Hyperice's storefront surfaces. Every operationId,
+  GraphQL field and MCP tool referenced below was verified against the artifacts
+  in this repo — the derived OpenAPI, the live-introspected GraphQL SDL, and the
+  UCP OpenRPC method list Hyperice's own /.well-known/ucp designates. Nothing is
+  invented.
+skills:
+- file: hyperice-browse-catalog.md
+  name: Browse the Hyperice product catalog
+  description: >-
+    Read products and collections from the unauthenticated storefront surfaces,
+    choosing the right one of the three projections for the job.
+  api: openapi/hyperice-storefront-openapi.yml
+  operations: [listProducts, getProduct, listCollections, listCollectionProducts]
+- file: hyperice-agent-commerce-checkout.md
+  name: Buy a Hyperice product as an agent
+  description: >-
+    Run the six-step UCP flow Hyperice publishes in /llms.txt, from discovery
+    through a buyer-approved checkout, honouring the human-approval and
+    idempotency rules.
+  api: mcp/hyperice-mcp.yml
+  operations: [search_catalog, create_cart, create_checkout, update_checkout, complete_checkout]
+- file: hyperice-graphql-cart.md
+  name: Build and submit a cart on the Storefront GraphQL API
+  description: >-
+    Use the GraphQL surface when UCP is unavailable, handling the two-channel
+    error model and the union-typed throttle and completion results.
+  api: graphql/hyperice-storefront.graphql
+  operations: [cartCreate, cartLinesAdd, cartBuyerIdentityUpdate, cartSelectedDeliveryOptionsUpdate, cartPrepareForCompletion, cartSubmitForCompletion]
