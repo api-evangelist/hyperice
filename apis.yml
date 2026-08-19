@@ -18,7 +18,7 @@ x-source: harvest:secondary-market
 x-tier: profiled
 x-tier-reason: enrichment-pass
 image: https://hyperice.com/cdn/shop/files/hyperice-social-share.jpg?v=1775020762&width=1200
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-07-31'
 modified: '2026-07-31'
 tags:
