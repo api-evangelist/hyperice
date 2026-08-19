@@ -1,0 +1,178 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Hyperice Storefront API",
+    "version": "2026-04"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List published products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://hyperice.com/products.json",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of records per page. Maximum 250."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "1-indexed page number."
+              }
+            ]
+          },
+          "docs": "Returns the store's published products. Paginated with `limit` (max 250) and `page`. 68 products were published at the time of derivation."
+        },
+        {
+          "info": {
+            "name": "Get a single product by handle",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://hyperice.com/products/:handle.json",
+            "params": [
+              {
+                "name": "handle",
+                "value": "open-box-hypervolt-go-3",
+                "type": "path",
+                "description": "The URL handle (slug) of the resource."
+              }
+            ]
+          },
+          "docs": "Returns one published product, keyed by its URL handle. Documented by Hyperice at /agents.md as `GET /products/{handle}.json`."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Collections",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List published collections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://hyperice.com/collections.json",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of records per page. Maximum 250."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "1-indexed page number."
+              }
+            ]
+          },
+          "docs": "List published collections"
+        },
+        {
+          "info": {
+            "name": "List products in a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://hyperice.com/collections/:handle/products.json",
+            "params": [
+              {
+                "name": "handle",
+                "value": "open-box-hypervolt-go-3",
+                "type": "path",
+                "description": "The URL handle (slug) of the resource."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of records per page. Maximum 250."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "1-indexed page number."
+              }
+            ]
+          },
+          "docs": "Returns the published products belonging to one collection. Documented by Hyperice at /agents.md as `GET /collections/{handle}/products.json`."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Discovery",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the sitemap index",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://hyperice.com/sitemap.xml"
+          },
+          "docs": "Sitemap index linking per-locale product, page, collection and blog sitemaps, plus `sitemap_agentic_discovery.xml`, which points at `/agents.md`."
+        },
+        {
+          "info": {
+            "name": "Get the agent instructions (llms.txt)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://hyperice.com/llms.txt"
+          },
+          "docs": "Hyperice's published agent instructions. Mirrors `/agents.md`. Declares UCP support, the MCP endpoint, and the read-only browsing surface."
+        },
+        {
+          "info": {
+            "name": "Get the canonical agent-facing store description",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://hyperice.com/agents.md"
+          },
+          "docs": "Get the canonical agent-facing store description"
+        },
+        {
+          "info": {
+            "name": "Get the UCP merchant profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://hyperice.com/.well-known/ucp"
+          },
+          "docs": "Universal Commerce Protocol discovery document: supported versions, service endpoints (the MCP shopping service), capabilities, and payment handlers."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

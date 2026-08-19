@@ -1,0 +1,786 @@
+{
+  "item": [
+    {
+      "id": "16de9595-e5cf-4bf0-8cf5-48caac401dfc",
+      "name": "Products",
+      "description": {
+        "content": "Product catalog read operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d06aed06-6117-48b7-bfcf-76d34480b309",
+          "name": "List published products",
+          "request": {
+            "name": "List published products",
+            "description": {
+              "content": "Returns the store's published products. Paginated with `limit` (max 250) and `page`. 68 products were published at the time of derivation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products.json"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of records per page. Maximum 250."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-indexed page number."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "82a374f4-ef46-45ab-89f4-f7dd4f326a80",
+              "name": "A page of products.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products.json"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"products\": [\n    {\n      \"id\": 9440344998102,\n      \"title\": \"Open Box Hypervolt Go 2\",\n      \"handle\": \"open-box-hypervolt-go-3\",\n      \"vendor\": \"Hyperice\",\n      \"product_type\": \"Recovery Device\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "431c17de-72b2-4a08-8dcc-68599234f8fa",
+          "name": "Get a single product by handle",
+          "request": {
+            "name": "Get a single product by handle",
+            "description": {
+              "content": "Returns one published product, keyed by its URL handle. Documented by Hyperice at /agents.md as `GET /products/{handle}.json`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products",
+                "{{handle}}.json"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9c3b0121-f348-4443-8492-e75964cefb61",
+              "name": "The product.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    "{{handle}}.json"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"id\": 5050,\n    \"title\": \"string\",\n    \"handle\": \"string\",\n    \"body_html\": \"string\",\n    \"published_at\": \"1961-04-12T05:32:26.924Z\",\n    \"created_at\": \"1994-01-06T06:44:30.478Z\",\n    \"updated_at\": \"1979-08-17T09:02:05.253Z\",\n    \"vendor\": \"Hyperice\",\n    \"product_type\": \"Recovery Device\",\n    \"tags\": [\n      \"string\",\n      \"string\"\n    ],\n    \"variants\": [\n      {\n        \"id\": 1530,\n        \"title\": \"string\",\n        \"product_id\": 2075,\n        \"option1\": \"string\",\n        \"option2\": \"string\",\n        \"option3\": \"string\",\n        \"sku\": \"string\",\n        \"requires_shipping\": true,\n        \"taxable\": true,\n        \"featured_image\": {\n          \"id\": 9698,\n          \"src\": \"https://avLRxEHelNMMuNcMDtjMhaPSpXOPiaI.xacUR.LrGJCEqiAQkxe0ffTLwJpf0.ulYKG5F7uJX\",\n          \"created_at\": \"2022-05-07T19:25:58.868Z\",\n          \"position\": 1783,\n          \"updated_at\": \"1954-06-28T08:49:27.654Z\",\n          \"product_id\": 9240,\n          \"variant_ids\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"width\": 3913,\n          \"height\": 4742\n        },\n        \"available\": true,\n        \"price\": \"string\",\n        \"grams\": 1754,\n        \"compare_at_price\": \"string\",\n        \"position\": 6403,\n        \"created_at\": \"2003-03-29T05:37:56.035Z\",\n        \"updated_at\": \"2019-03-22T03:37:59.100Z\"\n      },\n      {\n        \"id\": 3258,\n        \"title\": \"string\",\n        \"product_id\": 4195,\n        \"option1\": \"string\",\n        \"option2\": \"string\",\n        \"option3\": \"string\",\n        \"sku\": \"string\",\n        \"requires_shipping\": true,\n        \"taxable\": false,\n        \"featured_image\": {\n          \"id\": 7791,\n          \"src\": \"http://D.rtmUXJNal0Lyj,rCHggndf-BtHoe8VmkotISQdpUMTu0RaXaSZAf1rsk+F\",\n          \"created_at\": \"1960-08-19T19:09:12.782Z\",\n          \"position\": 8727,\n          \"updated_at\": \"2024-08-14T00:33:35.549Z\",\n          \"product_id\": 2620,\n          \"variant_ids\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"width\": 3774,\n          \"height\": 6579\n        },\n        \"available\": true,\n        \"price\": \"string\",\n        \"grams\": 6463,\n        \"compare_at_price\": \"string\",\n        \"position\": 5652,\n        \"created_at\": \"1992-03-28T08:37:02.739Z\",\n        \"updated_at\": \"1983-01-24T13:21:13.997Z\"\n      }\n    ],\n    \"images\": [\n      {\n        \"id\": 730,\n        \"src\": \"https://nysVhzytOdycG.lsjAd3C7PPMmI\",\n        \"created_at\": \"1987-07-29T15:07:05.468Z\",\n        \"position\": 6014,\n        \"updated_at\": \"2023-08-19T02:57:04.188Z\",\n        \"product_id\": 4756,\n        \"variant_ids\": [\n          813,\n          9669\n        ],\n        \"width\": 8166,\n        \"height\": 8564\n      },\n      {\n        \"id\": 8905,\n        \"src\": \"https://dQZrktmEjnBezHFWBuZyYihbM.fnhvN753tzy\",\n        \"created_at\": \"1967-04-01T10:57:51.441Z\",\n        \"position\": 4818,\n        \"updated_at\": \"1996-05-13T16:03:57.910Z\",\n        \"product_id\": 1178,\n        \"variant_ids\": [\n          464,\n          9247\n        ],\n        \"width\": 7939,\n        \"height\": 4702\n      }\n    ],\n    \"options\": [\n      {\n        \"name\": \"string\",\n        \"position\": 1194,\n        \"values\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      {\n        \"name\": \"string\",\n        \"position\": 4389,\n        \"values\": [\n          \"string\",\n          \"string\"\n        ]\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b46d83d6-fc0a-4290-b885-06d57645aa00",
+              "name": "No published product with that handle. Observed to return an empty body with `content-type: application/json`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    "{{handle}}.json"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "f9160909-e7e0-4d7f-be5b-dd7a549d8aa6",
+      "name": "Collections",
+      "description": {
+        "content": "Collection (category) read operations.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "52a54ea7-2789-4d42-b06c-69aec7b35afe",
+          "name": "List published collections",
+          "request": {
+            "name": "List published collections",
+            "description": {},
+            "url": {
+              "path": [
+                "collections.json"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of records per page. Maximum 250."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-indexed page number."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "18d658cb-ea75-44ee-a2e6-b016b81f8151",
+              "name": "A page of collections.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "collections.json"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"collections\": [\n    {\n      \"id\": 9235,\n      \"title\": \"string\",\n      \"handle\": \"string\",\n      \"description\": \"string\",\n      \"published_at\": \"1985-05-27T05:07:24.742Z\",\n      \"updated_at\": \"1964-07-11T22:42:28.374Z\",\n      \"image\": {\n        \"id\": 9692,\n        \"src\": \"http://A.lvrlP-jKcPaMHckKhVR\",\n        \"created_at\": \"1962-08-19T10:55:03.432Z\",\n        \"position\": 7753,\n        \"updated_at\": \"1962-01-05T07:25:33.149Z\",\n        \"product_id\": 7494,\n        \"variant_ids\": [\n          4513,\n          2487\n        ],\n        \"width\": 1994,\n        \"height\": 2058\n      },\n      \"products_count\": 7705\n    },\n    {\n      \"id\": 8619,\n      \"title\": \"string\",\n      \"handle\": \"string\",\n      \"description\": \"string\",\n      \"published_at\": \"1958-09-14T01:43:47.864Z\",\n      \"updated_at\": \"2007-08-29T13:29:22.682Z\",\n      \"image\": {\n        \"id\": 5880,\n        \"src\": \"https://zcvPJTfKmSasBSNEueVPIupVT.legymBQwxXUU.xtK,2jGhy0tpMtLswstPemE9x98JObXI4\",\n        \"created_at\": \"1974-12-09T12:55:49.395Z\",\n        \"position\": 8680,\n        \"updated_at\": \"1994-01-23T05:38:10.874Z\",\n        \"product_id\": 6980,\n        \"variant_ids\": [\n          5553,\n          2575\n        ],\n        \"width\": 3898,\n        \"height\": 8801\n      },\n      \"products_count\": 5938\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c4cc74ff-2a1d-486a-8b5e-01e80c3b4675",
+          "name": "List products in a collection",
+          "request": {
+            "name": "List products in a collection",
+            "description": {
+              "content": "Returns the published products belonging to one collection. Documented by Hyperice at /agents.md as `GET /collections/{handle}/products.json`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "collections",
+                ":handle",
+                "products.json"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of records per page. Maximum 250."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-indexed page number."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "handle",
+                  "description": "(Required) The URL handle (slug) of the resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "87e732a6-00ae-413c-b6c9-dbdb16a5324c",
+              "name": "A page of products in the collection.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "collections",
+                    ":handle",
+                    "products.json"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "handle",
+                      "description": "(Required) The URL handle (slug) of the resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"products\": [\n    {\n      \"id\": 2349,\n      \"title\": \"string\",\n      \"handle\": \"string\",\n      \"body_html\": \"string\",\n      \"published_at\": \"2018-05-03T18:56:34.761Z\",\n      \"created_at\": \"1985-11-21T15:47:43.100Z\",\n      \"updated_at\": \"1977-04-29T07:26:14.769Z\",\n      \"vendor\": \"Hyperice\",\n      \"product_type\": \"Recovery Device\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"variants\": [\n        {\n          \"id\": 7289,\n          \"title\": \"string\",\n          \"product_id\": 8459,\n          \"option1\": \"string\",\n          \"option2\": \"string\",\n          \"option3\": \"string\",\n          \"sku\": \"string\",\n          \"requires_shipping\": false,\n          \"taxable\": true,\n          \"featured_image\": {\n            \"id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"src\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"created_at\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"position\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updated_at\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"product_id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"variant_ids\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"width\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"height\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"available\": false,\n          \"price\": \"string\",\n          \"grams\": 5313,\n          \"compare_at_price\": \"string\",\n          \"position\": 9442,\n          \"created_at\": \"1981-02-28T18:20:38.873Z\",\n          \"updated_at\": \"2004-09-07T20:09:10.527Z\"\n        },\n        {\n          \"id\": 6023,\n          \"title\": \"string\",\n          \"product_id\": 7458,\n          \"option1\": \"string\",\n          \"option2\": \"string\",\n          \"option3\": \"string\",\n          \"sku\": \"string\",\n          \"requires_shipping\": false,\n          \"taxable\": false,\n          \"featured_image\": {\n            \"id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"src\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"created_at\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"position\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updated_at\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"product_id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"variant_ids\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"width\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"height\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"available\": false,\n          \"price\": \"string\",\n          \"grams\": 3748,\n          \"compare_at_price\": \"string\",\n          \"position\": 5519,\n          \"created_at\": \"2017-05-22T16:15:20.192Z\",\n          \"updated_at\": \"1988-07-07T09:15:16.447Z\"\n        }\n      ],\n      \"images\": [\n        {\n          \"id\": 2100,\n          \"src\": \"http://FTYwbHQTOpdFnWceMpBUcdWUSITcQN.xoh9vdplMLZJtTpRa9IMs0WF37TksxzZq\",\n          \"created_at\": \"1948-08-15T16:40:02.258Z\",\n          \"position\": 7995,\n          \"updated_at\": \"1948-08-01T19:47:07.562Z\",\n          \"product_id\": 5830,\n          \"variant_ids\": [\n            5049,\n            1427\n          ],\n          \"width\": 5351,\n          \"height\": 2725\n        },\n        {\n          \"id\": 7059,\n          \"src\": \"https://zeBYWApKcXaFffzVKRA.kxzzOhvbNEXNmChIULS21tarLT\",\n          \"created_at\": \"2007-11-03T02:17:16.803Z\",\n          \"position\": 1980,\n          \"updated_at\": \"1981-07-10T17:42:35.755Z\",\n          \"product_id\": 8609,\n          \"variant_ids\": [\n            6773,\n            183\n          ],\n          \"width\": 8198,\n          \"height\": 7853\n        }\n      ],\n      \"options\": [\n        {\n          \"name\": \"string\",\n          \"position\": 1663,\n          \"values\": [\n            \"string\",\n            \"string\"\n          ]\n        },\n        {\n          \"name\": \"string\",\n          \"position\": 8429,\n          \"values\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      ]\n    },\n    {\n      \"id\": 2089,\n      \"title\": \"string\",\n      \"handle\": \"string\",\n      \"body_html\": \"string\",\n      \"published_at\": \"1980-05-09T09:54:47.944Z\",\n      \"created_at\": \"1984-11-15T04:18:28.497Z\",\n      \"updated_at\": \"1947-03-11T16:34:25.795Z\",\n      \"vendor\": \"Hyperice\",\n      \"product_type\": \"Recovery Device\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"variants\": [\n        {\n          \"id\": 8055,\n          \"title\": \"string\",\n          \"product_id\": 5104,\n          \"option1\": \"string\",\n          \"option2\": \"string\",\n          \"option3\": \"string\",\n          \"sku\": \"string\",\n          \"requires_shipping\": false,\n          \"taxable\": true,\n          \"featured_image\": {\n            \"id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"src\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"created_at\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"position\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updated_at\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"product_id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"variant_ids\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"width\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"height\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"available\": true,\n          \"price\": \"string\",\n          \"grams\": 1677,\n          \"compare_at_price\": \"string\",\n          \"position\": 50,\n          \"created_at\": \"1990-06-23T18:10:44.892Z\",\n          \"updated_at\": \"1994-01-05T16:25:19.896Z\"\n        },\n        {\n          \"id\": 2406,\n          \"title\": \"string\",\n          \"product_id\": 2263,\n          \"option1\": \"string\",\n          \"option2\": \"string\",\n          \"option3\": \"string\",\n          \"sku\": \"string\",\n          \"requires_shipping\": false,\n          \"taxable\": false,\n          \"featured_image\": {\n            \"id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"src\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"created_at\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"position\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updated_at\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"product_id\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"variant_ids\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"width\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"height\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"available\": true,\n          \"price\": \"string\",\n          \"grams\": 7291,\n          \"compare_at_price\": \"string\",\n          \"position\": 1886,\n          \"created_at\": \"2019-05-24T18:39:53.149Z\",\n          \"updated_at\": \"2007-01-14T19:12:29.710Z\"\n        }\n      ],\n      \"images\": [\n        {\n          \"id\": 2112,\n          \"src\": \"https://ltIcseaCwBdfbfoMWCcZU.kowuqdxc5VMmeKA+lHlw6+-CTAAW4Y6eIYZxzxiWYApTtX7LoQo\",\n          \"created_at\": \"1986-07-15T05:30:10.823Z\",\n          \"position\": 7978,\n          \"updated_at\": \"1966-02-20T04:06:29.108Z\",\n          \"product_id\": 5938,\n          \"variant_ids\": [\n            8956,\n            9201\n          ],\n          \"width\": 6638,\n          \"height\": 4822\n        },\n        {\n          \"id\": 6590,\n          \"src\": \"https://buThdktjuHNg.ftktWsr-eXzner\",\n          \"created_at\": \"1970-06-21T03:26:55.937Z\",\n          \"position\": 3003,\n          \"updated_at\": \"2011-05-24T17:10:15.000Z\",\n          \"product_id\": 5755,\n          \"variant_ids\": [\n            3841,\n            9022\n          ],\n          \"width\": 783,\n          \"height\": 4777\n        }\n      ],\n      \"options\": [\n        {\n          \"name\": \"string\",\n          \"position\": 8162,\n          \"values\": [\n            \"string\",\n            \"string\"\n          ]\n        },\n        {\n          \"name\": \"string\",\n          \"position\": 6319,\n          \"values\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8b90567c-4346-466f-b17b-f899d479ae96",
+              "name": "No such collection.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "collections",
+                    ":handle",
+                    "products.json"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "handle",
+                      "description": "(Required) The URL handle (slug) of the resource."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "79ce0c93-a5ed-4db3-ae43-899d8a709c99",
+      "name": "Discovery",
+      "description": {
+        "content": "Agent- and crawler-facing discovery documents.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2c48d4c8-d1c5-4061-a29f-6bcb68502d15",
+          "name": "Get the sitemap index",
+          "request": {
+            "name": "Get the sitemap index",
+            "description": {
+              "content": "Sitemap index linking per-locale product, page, collection and blog sitemaps, plus `sitemap_agentic_discovery.xml`, which points at `/agents.md`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sitemap.xml"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7efb53f0-b158-414a-9529-0c57ba76b23c",
+              "name": "Sitemap index XML.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sitemap.xml"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<element>(string)</element>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4d378fb0-4d89-436a-8df5-47db0907a76e",
+          "name": "Get the agent instructions (llms.txt)",
+          "request": {
+            "name": "Get the agent instructions (llms.txt)",
+            "description": {
+              "content": "Hyperice's published agent instructions. Mirrors `/agents.md`. Declares UCP support, the MCP endpoint, and the read-only browsing surface.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "llms.txt"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/plain"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "507b335c-6b0c-4550-8484-d8a306eb339c",
+              "name": "llms.txt document.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "llms.txt"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/plain"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e73d575b-936c-4b52-a686-1d1126c21bdb",
+          "name": "Get the canonical agent-facing store description",
+          "request": {
+            "name": "Get the canonical agent-facing store description",
+            "description": {},
+            "url": {
+              "path": [
+                "agents.md"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/markdown"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bb981f3f-956c-43b1-b9fe-051c78a6cd2e",
+              "name": "agents.md document.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "agents.md"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/markdown"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/markdown"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1aea54f9-96eb-4158-a2d5-b8c29468c4f6",
+          "name": "Get the UCP merchant profile",
+          "request": {
+            "name": "Get the UCP merchant profile",
+            "description": {
+              "content": "Universal Commerce Protocol discovery document: supported versions, service endpoints (the MCP shopping service), capabilities, and payment handlers.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ".well-known",
+                "ucp"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3a67393a-564f-4ce6-aa0f-8df71c17e5d8",
+              "name": "UCP merchant profile.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ".well-known",
+                    "ucp"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ucp\": {\n    \"version\": \"2026-04-08\",\n    \"supported_versions\": {\n      \"key_0\": \"http://yql.acbe51RPp-c5.tmzEPWeS9r\",\n      \"key_1\": \"https://evKGljTQvWRHVRqKAzVCSr.joyWi.5.XuWiPpv9KFeGgl2vaotfygQlMSoOprGIEYVomwG8TEbRsjxtdNqpxSjNCMuSxtqFzxI\",\n      \"key_2\": \"https://pSUVZLDxuZMdAVWvKdvVUUQWkozlkz.orhvs8NgSTsV2XsaqfY3PUmWbEt2c7fN1NJyml53VpVM6LEWKUQ9po\"\n    },\n    \"services\": {},\n    \"capabilities\": {},\n    \"payment_handlers\": {}\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://hyperice.com",
+      "key": "baseUrl"
+    },
+    {
+      "disabled": false,
+      "description": {
+        "content": "(Required) The URL handle (slug) of the resource.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "<string>",
+      "key": "handle"
+    }
+  ],
+  "info": {
+    "_postman_id": "80332c4b-f9e9-4e0e-afe5-b96d603fffc8",
+    "name": "Hyperice Storefront API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The public, unauthenticated read surface of the Hyperice online store (hyperice.com), a Shopify-hosted storefront. Every path in this document is one that Hyperice itself publishes to agents in its own `/llms.txt` and `/agents.md` (\"Read-Only Browsing (No Authentication Required)\"), plus the store-level `/products.json` and `/collections.json` collections observed live. Schemas were derived from real responses fetched on 2026-07-31 — no field is invented.\n\nThis document is an API Evangelist derivation, not a Hyperice-published contract. Hyperice publishes no OpenAPI of its own. The machine-readable contracts Hyperice DOES publish are (a) the Shopify Storefront GraphQL schema, live and introspectable at https://hyperice.com/api/2026-04/graphql.json and captured in `graphql/hyperice-storefront.graphql`, and (b) the UCP shopping service declared at https://hyperice.com/.well-known/ucp and served over MCP at https://hyperice.com/api/ucp/mcp.\n\nContact Support:\n Name: Hyperice Customer Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -2,13 +2,10 @@ generated: '2026-07-31'
 method: searched
 source: https://hyperice.com/.well-known/ucp
 status: published
-description: >-
-  Hyperice runs a live, publicly addressable MCP server as the transport for the
-  Universal Commerce Protocol (UCP) shopping service on its Shopify storefront.
-  The server is declared by Hyperice's own UCP merchant profile at
-  /.well-known/ucp and advertised to agents in /llms.txt and /agents.md. This is
-  a real, provider-published agent surface — not a candidate derived from an
-  OpenAPI.
+description: Hyperice runs a live, publicly addressable MCP server as the transport for the Universal
+  Commerce Protocol (UCP) shopping service on its Shopify storefront. The server is declared by Hyperice's
+  own UCP merchant profile at /.well-known/ucp and advertised to agents in /llms.txt and /agents.md. This
+  is a real, provider-published agent surface — not a candidate derived from an OpenAPI.
 server:
   name: hyperice-ucp-shopping
   transport: http
@@ -17,139 +14,170 @@ server:
   canonical_url: https://hypericeprod.myshopify.com/api/ucp/mcp
   service: dev.ucp.shopping
   ucp_version: '2026-04-08'
-  supported_ucp_versions: ['2026-04-08', '2026-01-23']
+  supported_ucp_versions:
+  - '2026-04-08'
+  - '2026-01-23'
   spec: https://ucp.dev/2026-04-08/specification/overview/
   schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
 access:
   anonymous_tools_list: false
   gate: ucp-agent-profile
-  note: >-
-    tools/list and initialize are reachable but refuse to enumerate without a
-    UCP agent profile. An anonymous POST of
-    {"jsonrpc":"2.0","id":1,"method":"tools/list"} returns HTTP 422 with
-    JSON-RPC error -32001 "UCP discovery failed", data.code
-    "invalid_profile_url", content "Unable to fetch agent profile: Missing
-    profile uri". The calling agent must publish a resolvable UCP agent profile
-    URI. Tool NAMES and SCHEMAS below are therefore not read from this server's
-    live tools/list — they are taken from the OpenRPC document that Hyperice's
-    own /.well-known/ucp names as the schema for this service, plus the flow
-    Hyperice documents in /llms.txt. Nothing here is invented.
+  note: 'tools/list and initialize are reachable but refuse to enumerate without a UCP agent profile.
+    An anonymous POST of {"jsonrpc":"2.0","id":1,"method":"tools/list"} returns HTTP 422 with JSON-RPC
+    error -32001 "UCP discovery failed", data.code "invalid_profile_url", content "Unable to fetch agent
+    profile: Missing profile uri". The calling agent must publish a resolvable UCP agent profile URI.
+    Tool NAMES and SCHEMAS below are therefore not read from this server''s live tools/list — they are
+    taken from the OpenRPC document that Hyperice''s own /.well-known/ucp names as the schema for this
+    service, plus the flow Hyperice documents in /llms.txt. Nothing here is invented.'
   authorization_servers:
-    - https://accounts.hyperice.com
-    - https://shopify.com/authentication/78618525910
+  - https://accounts.hyperice.com
+  - https://shopify.com/authentication/78618525910
   oauth_scopes_relevant:
-    - customer-account-mcp-api:full
+  - customer-account-mcp-api:full
   rate_limited: true
-  rate_limit_note: >-
-    "The MCP endpoint is rate-limited per IP. Back off on 429 responses."
-    (hyperice.com/llms.txt)
+  rate_limit_note: '"The MCP endpoint is rate-limited per IP. Back off on 429 responses." (hyperice.com/llms.txt)'
 capabilities:
-  - dev.ucp.shopping.catalog.search
-  - dev.ucp.shopping.catalog.lookup
-  - dev.ucp.shopping.cart
-  - dev.ucp.shopping.checkout
-  - dev.ucp.shopping.fulfillment
-  - dev.ucp.shopping.discount
-  - dev.ucp.shopping.order
-  - dev.shopify.catalog
+- dev.ucp.shopping.catalog.search
+- dev.ucp.shopping.catalog.lookup
+- dev.ucp.shopping.cart
+- dev.ucp.shopping.checkout
+- dev.ucp.shopping.fulfillment
+- dev.ucp.shopping.discount
+- dev.ucp.shopping.order
+- dev.shopify.catalog
 payment_handlers:
-  - id: gpay
-    handler: com.google.pay
-    merchant_name: Hyperice
-    merchant_origin: hyperice.com
-    card_networks: [VISA, MASTERCARD, AMEX, DISCOVER]
-  - id: shopify.card
-    handler: dev.shopify.card
-    card_brands: [visa, master, american_express, discover, diners_club]
-  - id: shop_pay
-    handler: dev.shopify.shop_pay
+- id: gpay
+  handler: com.google.pay
+  merchant_name: Hyperice
+  merchant_origin: hyperice.com
+  card_networks:
+  - VISA
+  - MASTERCARD
+  - AMEX
+  - DISCOVER
+- id: shopify.card
+  handler: dev.shopify.card
+  card_brands:
+  - visa
+  - master
+  - american_express
+  - discover
+  - diners_club
+- id: shop_pay
+  handler: dev.shopify.shop_pay
 tools:
-  - name: search_catalog
-    description: Search for products in the catalog.
-    capability: dev.ucp.shopping.catalog.search
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#search_catalog
-  - name: lookup_catalog
-    description: Batch lookup products or variants by identifier.
-    capability: dev.ucp.shopping.catalog.lookup
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#lookup_catalog
-  - name: get_product
-    description: Get product details.
-    capability: dev.ucp.shopping.catalog.lookup
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#get_product
-  - name: create_cart
-    description: Create a cart.
-    capability: dev.ucp.shopping.cart
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#create_cart
-  - name: get_cart
-    description: Get cart.
-    capability: dev.ucp.shopping.cart
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#get_cart
-  - name: update_cart
-    description: Update cart.
-    capability: dev.ucp.shopping.cart
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#update_cart
-  - name: cancel_cart
-    description: Cancel cart.
-    capability: dev.ucp.shopping.cart
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#cancel_cart
-  - name: create_checkout
-    description: Create a checkout.
-    capability: dev.ucp.shopping.checkout
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#create_checkout
-  - name: get_checkout
-    description: Get checkout.
-    capability: dev.ucp.shopping.checkout
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#get_checkout
-  - name: update_checkout
-    description: Update checkout (shipping address and method).
-    capability: dev.ucp.shopping.checkout
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#update_checkout
-  - name: complete_checkout
-    description: Complete checkout and place order. Requires explicit buyer approval.
-    capability: dev.ucp.shopping.checkout
-    human_in_the_loop: required
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#complete_checkout
-  - name: cancel_checkout
-    description: Cancel checkout.
-    capability: dev.ucp.shopping.checkout
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#cancel_checkout
-  - name: get_order
-    description: Get order.
-    capability: dev.ucp.shopping.order
-    source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#get_order
+- name: search_catalog
+  description: Search for products in the catalog.
+  capability: dev.ucp.shopping.catalog.search
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#search_catalog
+- name: lookup_catalog
+  description: Batch lookup products or variants by identifier.
+  capability: dev.ucp.shopping.catalog.lookup
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#lookup_catalog
+- name: get_product
+  description: Get product details.
+  capability: dev.ucp.shopping.catalog.lookup
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#get_product
+- name: create_cart
+  description: Create a cart.
+  capability: dev.ucp.shopping.cart
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#create_cart
+- name: get_cart
+  description: Get cart.
+  capability: dev.ucp.shopping.cart
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#get_cart
+- name: update_cart
+  description: Update cart.
+  capability: dev.ucp.shopping.cart
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#update_cart
+- name: cancel_cart
+  description: Cancel cart.
+  capability: dev.ucp.shopping.cart
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#cancel_cart
+- name: create_checkout
+  description: Create a checkout.
+  capability: dev.ucp.shopping.checkout
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#create_checkout
+- name: get_checkout
+  description: Get checkout.
+  capability: dev.ucp.shopping.checkout
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#get_checkout
+- name: update_checkout
+  description: Update checkout (shipping address and method).
+  capability: dev.ucp.shopping.checkout
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#update_checkout
+- name: complete_checkout
+  description: Complete checkout and place order. Requires explicit buyer approval.
+  capability: dev.ucp.shopping.checkout
+  human_in_the_loop: required
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#complete_checkout
+- name: cancel_checkout
+  description: Cancel checkout.
+  capability: dev.ucp.shopping.checkout
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#cancel_checkout
+- name: get_order
+  description: Get order.
+  capability: dev.ucp.shopping.order
+  source_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json#get_order
 documented_flow:
-  - step: 1
-    action: GET /.well-known/ucp to confirm capabilities
-  - step: 2
-    action: search_catalog to find products matching buyer intent
-  - step: 3
-    action: create_cart to add desired items
-  - step: 4
-    action: create_checkout to start the purchase flow
-  - step: 5
-    action: update_checkout to set shipping address and method
-  - step: 6
-    action: complete_checkout to finalize (buyer must approve payment)
+- step: 1
+  action: GET /.well-known/ucp to confirm capabilities
+- step: 2
+  action: search_catalog to find products matching buyer intent
+- step: 3
+  action: create_cart to add desired items
+- step: 4
+  action: create_checkout to start the purchase flow
+- step: 5
+  action: update_checkout to set shipping address and method
+- step: 6
+  action: complete_checkout to finalize (buyer must approve payment)
 rules:
-  - >-
-    Checkout requires human approval. Agents must not complete payment without
-    explicit buyer consent.
-  - Respect rate limits; back off on 429 responses.
-  - Pass context.address_country and context.currency for accurate pricing.
+- Checkout requires human approval. Agents must not complete payment without explicit buyer consent.
+- Respect rate limits; back off on 429 responses.
+- Pass context.address_country and context.currency for accurate pricing.
 alternative_surface:
   name: Shop skill
   url: https://shop.app/SKILL.md
-  note: >-
-    Hyperice's llms.txt recommends personal-shopping agents install the
-    cross-store Shop skill and route purchases through Shop Pay rather than
-    scripting the storefront directly. This is a Shopify-operated surface, not
-    a Hyperice-operated one.
+  note: Hyperice's llms.txt recommends personal-shopping agents install the cross-store Shop skill and
+    route purchases through Shop Pay rather than scripting the storefront directly. This is a Shopify-operated
+    surface, not a Hyperice-operated one.
 x-evidence:
   fetched: '2026-07-31'
   probes:
-    - {url: 'https://hyperice.com/.well-known/ucp', method: GET, http_status: 200, content_type: application/json}
-    - {url: 'https://hyperice.com/api/ucp/mcp', method: POST, body: 'tools/list', http_status: 422, error: 'invalid_profile_url'}
-    - {url: 'https://hypericeprod.myshopify.com/api/ucp/mcp', method: POST, body: 'tools/list', http_status: 422, error: 'invalid_profile_url'}
-    - {url: 'https://hyperice.com/api/ucp/mcp', method: POST, body: 'initialize', http_status: 422, error: 'invalid_profile_url'}
-    - {url: 'https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json', method: GET, http_status: 200, note: 'OpenRPC 1.3.2, "UCP Shopping Service", 13 methods — the schema Hyperice''s own UCP profile points at'}
-    - {url: 'https://hyperice.com/api/mcp', method: GET, http_status: 404, note: 'Shopify Storefront MCP path not in use; UCP path is'}
+  - url: https://hyperice.com/.well-known/ucp
+    method: GET
+    http_status: 200
+    content_type: application/json
+  - url: https://hyperice.com/api/ucp/mcp
+    method: POST
+    body: tools/list
+    http_status: 422
+    error: invalid_profile_url
+  - url: https://hypericeprod.myshopify.com/api/ucp/mcp
+    method: POST
+    body: tools/list
+    http_status: 422
+    error: invalid_profile_url
+  - url: https://hyperice.com/api/ucp/mcp
+    method: POST
+    body: initialize
+    http_status: 422
+    error: invalid_profile_url
+  - url: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+    method: GET
+    http_status: 200
+    note: OpenRPC 1.3.2, "UCP Shopping Service", 13 methods — the schema Hyperice's own UCP profile points
+      at
+  - url: https://hyperice.com/api/mcp
+    method: GET
+    http_status: 404
+    note: Shopify Storefront MCP path not in use; UCP path is
+deployment:
+  mode: remote
+  endpoint: https://hyperice.com/api/ucp/mcp
+  verified: probed
+  probe: live
+  tools: 13
+  checked: '2026-08-12'
+  source: catalog MCP census
