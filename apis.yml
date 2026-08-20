@@ -27,6 +27,17 @@ tags:
 - Retail
 - Health and Wellness
 - Consumer Hardware
+- Sports And Fitness
+- Agentic Commerce
+- GraphQL
+- MCP
+- Shopify
+tags_raw:
+- Company
+- Commerce
+- Retail
+- Health and Wellness
+- Consumer Hardware
 - Sports and Fitness
 - Agentic Commerce
 - GraphQL
@@ -89,6 +100,11 @@ apis:
   humanURL: https://hyperice.com/agents.md
   baseURL: https://hyperice.com
   tags:
+  - REST
+  - Catalog
+  - Product
+  - Read Only
+  tags_raw:
   - REST
   - Catalog
   - Products
