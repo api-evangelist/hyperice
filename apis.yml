@@ -46,11 +46,10 @@ tags_raw:
 apis:
 - name: Hyperice Storefront GraphQL API
   description: >-
-    The Shopify Storefront GraphQL API served on Hyperice's own domain. Full
-    introspection succeeded unauthenticated on 2026-07-31 — 424 types, 35
-    QueryRoot fields, 41 Mutation fields — making this the richest
-    machine-readable contract Hyperice serves, and the only surface with write
-    capability (carts, customer accounts, Shop Pay payment requests).
+    The Shopify Storefront GraphQL API served on Hyperice's own domain. Full introspection succeeded unauthenticated
+    on 2026-07-31 — 424 types, 35 QueryRoot fields, 41 Mutation fields — making this the richest machine-readable
+    contract Hyperice serves, and the only surface with write capability (carts, customer accounts, Shop
+    Pay payment requests).
   humanURL: https://hyperice.com/agents.md
   baseURL: https://hyperice.com/api/2026-04/graphql.json
   tags:
@@ -71,11 +70,10 @@ apis:
     url: data-model/hyperice-data-model.yml
 - name: Hyperice UCP Shopping MCP Server
   description: >-
-    A live MCP (JSON-RPC 2.0 over HTTP) server implementing the Universal
-    Commerce Protocol shopping service, declared by Hyperice's own
-    /.well-known/ucp merchant profile and advertised to agents in /llms.txt.
-    Exposes 13 catalog, cart, checkout and order tools. tools/list is reachable
-    but gated behind a resolvable UCP agent profile URI.
+    A live MCP (JSON-RPC 2.0 over HTTP) server implementing the Universal Commerce Protocol shopping service,
+    declared by Hyperice's own /.well-known/ucp merchant profile and advertised to agents in /llms.txt.
+    Exposes 13 catalog, cart, checkout and order tools. tools/list is reachable but gated behind a resolvable
+    UCP agent profile URI.
   humanURL: https://hyperice.com/llms.txt
   baseURL: https://hyperice.com/api/ucp/mcp
   tags:
@@ -90,30 +88,36 @@ apis:
     url: mcp/hyperice-tool-crosswalk.yml
   - type: AgenticAccess
     url: agentic-access/hyperice-agentic-access.yml
-- name: Hyperice Storefront JSON API
-  description: >-
-    The unauthenticated read-only product and collection JSON surface Hyperice
-    documents to agents in /agents.md under "Read-Only Browsing (No
-    Authentication Required)" — /products.json, /products/{handle}.json,
-    /collections.json and /collections/{handle}/products.json, plus the
-    discovery documents.
+- aid: hyperice:hyperice-collections-api
+  name: Hyperice Collections API
+  description: Collection (category) read operations.
   humanURL: https://hyperice.com/agents.md
-  baseURL: https://hyperice.com
+  baseURL: https://hyperice.com/api/2026-04/graphql.json
   tags:
-  - REST
-  - Catalog
-  - Product
-  - Read Only
-  tags_raw:
-  - REST
-  - Catalog
-  - Products
-  - Read Only
+  - Collections
   properties:
   - type: OpenAPI
-    url: openapi/hyperice-storefront-openapi.yml
-  - type: Overlay
-    url: overlays/hyperice-storefront-overlay.yaml
+    url: openapi/hyperice-collections-api-openapi.yml
+- aid: hyperice:hyperice-discovery-api
+  name: Hyperice Discovery API
+  description: Agent- and crawler-facing discovery documents.
+  humanURL: https://hyperice.com/agents.md
+  baseURL: https://hyperice.com/api/2026-04/graphql.json
+  tags:
+  - Discovery
+  properties:
+  - type: OpenAPI
+    url: openapi/hyperice-discovery-api-openapi.yml
+- aid: hyperice:hyperice-products-api
+  name: Hyperice Products API
+  description: Product catalog read operations.
+  humanURL: https://hyperice.com/agents.md
+  baseURL: https://hyperice.com/api/2026-04/graphql.json
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/hyperice-products-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
