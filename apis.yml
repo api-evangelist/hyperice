@@ -39,7 +39,7 @@ tags:
 - Retail
 - Health and Wellness
 - Consumer Hardware
-- Sports And Fitness
+- Sports and Fitness
 - Agentic Commerce
 - GraphQL
 - MCP
@@ -106,6 +106,8 @@ apis:
   humanURL: https://hyperice.com/agents.md
   baseURL: https://hyperice.com/api/2026-04/graphql.json
   tags:
+  - Collection
+  tags_raw:
   - Collections
   properties:
   - type: OpenAPI
@@ -126,6 +128,8 @@ apis:
   humanURL: https://hyperice.com/agents.md
   baseURL: https://hyperice.com/api/2026-04/graphql.json
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
