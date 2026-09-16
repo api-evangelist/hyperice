@@ -1,17 +1,13 @@
 aid: hyperice
 name: Hyperice
-description: >-
-  Hyperice is a recovery and movement-enhancement technology company founded in
-  2010 and headquartered in Irvine, California, known for the Hypervolt
-  percussion massage line, the Normatec dynamic air-compression systems it
-  acquired in 2020, and the Venom thermal/vibration wearables. Its API surface is
-  not a developer platform but an agentic-commerce storefront: hyperice.com runs
-  on Shopify and publishes a machine-readable agent contract at /llms.txt and
-  /agents.md, a Universal Commerce Protocol (UCP) merchant profile at
-  /.well-known/ucp, a live MCP shopping server at /api/ucp/mcp, a fully
-  introspectable Shopify Storefront GraphQL API, OIDC/OAuth2 customer accounts at
-  accounts.hyperice.com, and an unauthenticated read-only product and collection
-  JSON surface.
+description: 'Hyperice is a recovery and movement-enhancement technology company founded in 2010 and headquartered
+  in Irvine, California, known for the Hypervolt percussion massage line, the Normatec dynamic air-compression
+  systems it acquired in 2020, and the Venom thermal/vibration wearables. Its API surface is not a developer
+  platform but an agentic-commerce storefront: hyperice.com runs on Shopify and publishes a machine-readable
+  agent contract at /llms.txt and /agents.md, a Universal Commerce Protocol (UCP) merchant profile at
+  /.well-known/ucp, a live MCP shopping server at /api/ucp/mcp, a fully introspectable Shopify Storefront
+  GraphQL API, OIDC/OAuth2 customer accounts at accounts.hyperice.com, and an unauthenticated read-only
+  product and collection JSON surface.'
 url: https://raw.githubusercontent.com/api-evangelist/hyperice/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
@@ -47,7 +43,7 @@ accessModel:
 image: https://hyperice.com/cdn/shop/files/hyperice-social-share.jpg?v=1775020762&width=1200
 specificationVersion: '0.23'
 created: '2026-07-31'
-modified: '2026-07-31'
+modified: '2026-09-16'
 tags:
 - Company
 - Commerce
@@ -72,11 +68,10 @@ tags_raw:
 - Shopify
 apis:
 - name: Hyperice Storefront GraphQL API
-  description: >-
-    The Shopify Storefront GraphQL API served on Hyperice's own domain. Full introspection succeeded unauthenticated
-    on 2026-07-31 — 424 types, 35 QueryRoot fields, 41 Mutation fields — making this the richest machine-readable
-    contract Hyperice serves, and the only surface with write capability (carts, customer accounts, Shop
-    Pay payment requests).
+  description: The Shopify Storefront GraphQL API served on Hyperice's own domain. Full introspection
+    succeeded unauthenticated on 2026-07-31 — 424 types, 35 QueryRoot fields, 41 Mutation fields — making
+    this the richest machine-readable contract Hyperice serves, and the only surface with write capability
+    (carts, customer accounts, Shop Pay payment requests).
   humanURL: https://hyperice.com/agents.md
   baseURL: https://hyperice.com/api/2026-04/graphql.json
   tags:
@@ -96,11 +91,10 @@ apis:
   - type: DataModel
     url: data-model/hyperice-data-model.yml
 - name: Hyperice UCP Shopping MCP Server
-  description: >-
-    A live MCP (JSON-RPC 2.0 over HTTP) server implementing the Universal Commerce Protocol shopping service,
-    declared by Hyperice's own /.well-known/ucp merchant profile and advertised to agents in /llms.txt.
-    Exposes 13 catalog, cart, checkout and order tools. tools/list is reachable but gated behind a resolvable
-    UCP agent profile URI.
+  description: A live MCP (JSON-RPC 2.0 over HTTP) server implementing the Universal Commerce Protocol
+    shopping service, declared by Hyperice's own /.well-known/ucp merchant profile and advertised to agents
+    in /llms.txt. Exposes 13 catalog, cart, checkout and order tools. tools/list is reachable but gated
+    behind a resolvable UCP agent profile URI.
   humanURL: https://hyperice.com/llms.txt
   baseURL: https://hyperice.com/api/ucp/mcp
   tags:
@@ -180,7 +174,7 @@ common:
 - type: GraphQL
   url: graphql/hyperice-storefront.graphql
 - type: OpenAPI
-  url: openapi/hyperice-storefront-openapi.yml
+  url: openapi/_original/hyperice-storefront-openapi.yml
 - type: Overlay
   url: overlays/hyperice-storefront-overlay.yaml
 - type: WellKnown
