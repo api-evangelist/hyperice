@@ -2,10 +2,7 @@ openapi: 3.2.0
 info:
   title: Hyperice Storefront Collections API
   version: 2026-04
-  description: 'The public, unauthenticated read surface of the Hyperice online store (hyperice.com), a Shopify-hosted storefront. Every path in this document is one that Hyperice itself publishes to agents in its own `/llms.txt` and `/agents.md` ("Read-Only Browsing (No Authentication Required)"), plus the store-level `/products.json` and `/collections.json` collections observed live. Schemas were derived from real responses fetched on 2026-07-31 — no field is invented.
-
-
-    This document is an API Evangelist derivation, not a Hyperice-published contract. Hyperice publishes no OpenAPI of its own. The machine-readable contracts Hyperice DOES publish are (a) the Shopify Storefront GraphQL schema, live and introspectable at https://hyperice.com/api/2026-04/graphql.json and captured in `graphql/hyperice-storefront.graphql`, and (b) the UCP shopping service declared at https://hyperice.com/.well-known/ucp and served over MCP at https://hyperice.com/api/ucp/mcp.'
+  description: The public, unauthenticated read surface of the Hyperice online store (hyperice.com), a Shopify-hosted storefront.
   contact:
     name: Hyperice Customer Support
     url: https://hyperice.com/
@@ -72,15 +69,14 @@ paths:
           description: No such collection.
 components:
   parameters:
-    Page:
-      name: page
-      in: query
-      description: 1-indexed page number.
-      required: false
+    Handle:
+      name: handle
+      in: path
+      description: The URL handle (slug) of the resource.
+      required: true
       schema:
-        type: integer
-        minimum: 1
-        default: 1
+        type: string
+      example: open-box-hypervolt-go-3
     Limit:
       name: limit
       in: query
@@ -91,14 +87,15 @@ components:
         minimum: 1
         maximum: 250
         default: 50
-    Handle:
-      name: handle
-      in: path
-      description: The URL handle (slug) of the resource.
-      required: true
+    Page:
+      name: page
+      in: query
+      description: 1-indexed page number.
+      required: false
       schema:
-        type: string
-      example: open-box-hypervolt-go-3
+        type: integer
+        minimum: 1
+        default: 1
   schemas:
     Product:
       type: object
@@ -151,6 +148,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Option'
+    Option:
+      type: object
+      properties:
+        name:
+          type: string
+        position:
+          type: integer
+        values:
+          type: array
+          items:
+            type: string
     Variant:
       type: object
       description: A purchasable variant of a product.
@@ -245,17 +253,6 @@ components:
           type: integer
         height:
           type: integer
-    Option:
-      type: object
-      properties:
-        name:
-          type: string
-        position:
-          type: integer
-        values:
-          type: array
-          items:
-            type: string
     Collection:
       type: object
       description: A published storefront collection.

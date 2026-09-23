@@ -1,60 +1,10 @@
 generated: '2026-07-31'
 method: probed
 host: https://hyperice.com
-description: >-
-  The /.well-known/ discovery surface of hyperice.com. Four documents are served,
-  and they are the reason this provider has an agent posture at all: the UCP
-  merchant profile is what makes the MCP shopping server discoverable, and the
-  OIDC/OAuth metadata is what makes the customer-account tier machine-readable.
-  Absences are recorded as real data.
-documents:
-- path: /.well-known/ucp
-  standard: Universal Commerce Protocol merchant profile
-  status: 200
-  content_type: application/json
-  file: hyperice-ucp.json
-  note: >-
-    Declares UCP 2026-04-08 (and 2026-01-23), the dev.ucp.shopping service over
-    MCP transport at https://hypericeprod.myshopify.com/api/ucp/mcp, eight
-    capabilities, and three payment handlers (Google Pay, Shopify card, Shop Pay).
-- path: /.well-known/openid-configuration
-  standard: OpenID Connect Discovery 1.0
-  status: 200
-  content_type: application/json
-  file: hyperice-openid-configuration.json
-- path: /.well-known/oauth-authorization-server
-  standard: RFC 8414 OAuth 2.0 Authorization Server Metadata
-  status: 200
-  content_type: application/json
-  file: hyperice-oauth-authorization-server.json
-  note: Byte-identical to the OIDC discovery document on this store.
-- path: /.well-known/oauth-protected-resource
-  standard: RFC 9728 OAuth 2.0 Protected Resource Metadata
-  status: 200
-  content_type: application/json
-  file: hyperice-oauth-protected-resource.json
-- path: /.well-known/apple-app-site-association
-  standard: Apple universal links
-  status: 200
-  content_type: application/json
-  note: >-
-    Served but empty — applinks.apps and applinks.details are both empty arrays,
-    so no universal-link association is actually declared. Not saved.
-- path: /.well-known/security.txt
-  standard: RFC 9116
-  status: 404
-- path: /.well-known/agent-card.json
-  standard: A2A 1.0.0
-  status: 404
-- path: /.well-known/agent.json
-  standard: A2A pre-0.3 legacy
-  status: 404
-- path: /.well-known/api-catalog
-  standard: RFC 9727
-  status: 404
-- path: /.well-known/ai-plugin.json
-  standard: OpenAI plugin manifest (deprecated)
-  status: 404
+description: 'The /.well-known/ discovery surface of hyperice.com. Four documents are served, and they
+  are the reason this provider has an agent posture at all: the UCP merchant profile is what makes the
+  MCP shopping server discoverable, and the OIDC/OAuth metadata is what makes the customer-account tier
+  machine-readable. Absences are recorded as real data.'
 adjacent_discovery:
 - path: /llms.txt
   status: 200
@@ -63,31 +13,85 @@ adjacent_discovery:
 - path: /agents.md
   status: 200
   file: ../llms/hyperice-agents.md
-  note: >-
-    Hyperice names this the canonical agent-facing description of the store, and
-    lists it as the sole entry of a dedicated sitemap.
+  note: Hyperice names this the canonical agent-facing description of the store, and lists it as the sole
+    entry of a dedicated sitemap.
 - path: /sitemap_agentic_discovery.xml
   status: 200
-  note: >-
-    A sitemap whose only <url> is https://hyperice.com/agents.md — an explicit
-    signal to crawlers that the agent contract is a first-class page.
+  note: A sitemap whose only <url> is https://hyperice.com/agents.md — an explicit signal to crawlers
+    that the agent contract is a first-class page.
 - path: /sitemap.xml
   status: 200
   note: Sitemap index across 17 locales.
 - path: /robots.txt
   status: 200
-  note: >-
-    Opens with "# Shopify storefront. Public product, collection, page, blog
-    data is available..." — an affirmative statement that the read surface is
-    intended for machine consumption.
+  note: Opens with "# Shopify storefront. Public product, collection, page, blog data is available..."
+    — an affirmative statement that the read surface is intended for machine consumption.
 false_positives_checked:
-- hosts: [api.hyperice.com, developer.hyperice.com, developers.hyperice.com, docs.hyperice.com, mcp.hyperice.com, status.hyperice.com, trust.hyperice.com]
+- hosts:
+  - api.hyperice.com
+  - developer.hyperice.com
+  - developers.hyperice.com
+  - docs.hyperice.com
+  - mcp.hyperice.com
+  - status.hyperice.com
+  - trust.hyperice.com
   observed: HTTP 301 from AmazonS3 to https://hyperice.com/, then 200
-  conclusion: >-
-    A wildcard S3 redirect answers every unprovisioned subdomain, so a naive
-    status check reads 200 for all of them. None of these hosts exists. In
-    particular there is NO developer portal, NO docs host, NO status page and NO
-    trust center — the 200s are artifacts of the redirect.
+  conclusion: A wildcard S3 redirect answers every unprovisioned subdomain, so a naive status check reads
+    200 for all of them. None of these hosts exists. In particular there is NO developer portal, NO docs
+    host, NO status page and NO trust center — the 200s are artifacts of the redirect.
 x-evidence:
   fetched: '2026-07-31'
   method: direct HTTP GET per path, following redirects, verifying content-type and body shape
+hosts:
+- host: https://hyperice.com
+  documents:
+  - path: /.well-known/ucp
+    status: 200
+    file: hyperice-ucp.json
+    standard: Universal Commerce Protocol merchant profile
+    content_type: application/json
+    note: Declares UCP 2026-04-08 (and 2026-01-23), the dev.ucp.shopping service over MCP transport at
+      https://hypericeprod.myshopify.com/api/ucp/mcp, eight capabilities, and three payment handlers (Google
+      Pay, Shopify card, Shop Pay).
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: hyperice-openid-configuration.json
+    standard: OpenID Connect Discovery 1.0
+    content_type: application/json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: hyperice-oauth-authorization-server.json
+    standard: RFC 8414 OAuth 2.0 Authorization Server Metadata
+    content_type: application/json
+    note: Byte-identical to the OIDC discovery document on this store.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: hyperice-oauth-protected-resource.json
+    standard: RFC 9728 OAuth 2.0 Protected Resource Metadata
+    content_type: application/json
+  - path: /.well-known/apple-app-site-association
+    status: 200
+    standard: Apple universal links
+    content_type: application/json
+    note: Served but empty — applinks.apps and applinks.details are both empty arrays, so no universal-link
+      association is actually declared. Not saved.
+  - path: /.well-known/security.txt
+    status: 404
+    standard: RFC 9116
+  - path: /.well-known/agent-card.json
+    status: 404
+    standard: A2A 1.0.0
+  - path: /.well-known/agent.json
+    status: 404
+    standard: A2A pre-0.3 legacy
+  - path: /.well-known/api-catalog
+    status: 404
+    standard: RFC 9727
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    standard: OpenAI plugin manifest (deprecated)
+x-shape-fix:
+  converted: '2026-08-20'
+  from: documents
+  note: Rewritten into hosts[] -> documents[], the only shape well_known_docs() in score.rb reads. A served
+    .well-known surface recorded in any other shape scores as absent.

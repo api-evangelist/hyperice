@@ -1,0 +1,24 @@
+{
+  "provider": "hyperice",
+  "sources": [
+    "_original/hyperice-storefront-openapi.yml"
+  ],
+  "outputs": [
+    "hyperice-collections-api-openapi.yml",
+    "hyperice-discovery-api-openapi.yml",
+    "hyperice-products-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "hyperice-storefront-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "hyperice-collections-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hyperice-discovery-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "hyperice-products-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

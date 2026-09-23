@@ -2,10 +2,7 @@ openapi: 3.2.0
 info:
   title: Hyperice Storefront Discovery API
   version: 2026-04
-  description: 'The public, unauthenticated read surface of the Hyperice online store (hyperice.com), a Shopify-hosted storefront. Every path in this document is one that Hyperice itself publishes to agents in its own `/llms.txt` and `/agents.md` ("Read-Only Browsing (No Authentication Required)"), plus the store-level `/products.json` and `/collections.json` collections observed live. Schemas were derived from real responses fetched on 2026-07-31 — no field is invented.
-
-
-    This document is an API Evangelist derivation, not a Hyperice-published contract. Hyperice publishes no OpenAPI of its own. The machine-readable contracts Hyperice DOES publish are (a) the Shopify Storefront GraphQL schema, live and introspectable at https://hyperice.com/api/2026-04/graphql.json and captured in `graphql/hyperice-storefront.graphql`, and (b) the UCP shopping service declared at https://hyperice.com/.well-known/ucp and served over MCP at https://hyperice.com/api/ucp/mcp.'
+  description: The public, unauthenticated read surface of the Hyperice online store (hyperice.com), a Shopify-hosted storefront.
   contact:
     name: Hyperice Customer Support
     url: https://hyperice.com/
