@@ -90,6 +90,9 @@ apis:
     url: errors/hyperice-problem-types.yml
   - type: DataModel
     url: data-model/hyperice-data-model.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront-graphql
 - name: Hyperice UCP Shopping MCP Server
   description: A live MCP (JSON-RPC 2.0 over HTTP) server implementing the Universal Commerce Protocol
     shopping service, declared by Hyperice's own /.well-known/ucp merchant profile and advertised to agents
@@ -114,40 +117,9 @@ apis:
     url: mcp/hyperice-tool-crosswalk.yml
   - type: AgenticAccess
     url: agentic-access/hyperice-agentic-access.yml
-- aid: hyperice:hyperice-collections-api
-  name: Hyperice Collections API
-  description: Collection (category) read operations.
-  humanURL: https://hyperice.com/agents.md
-  baseURL: https://hyperice.com/api/2026-04/graphql.json
-  tags:
-  - Collection
-  tags_raw:
-  - Collections
-  properties:
-  - type: OpenAPI
-    url: openapi/hyperice-collections-api-openapi.yml
-- aid: hyperice:hyperice-discovery-api
-  name: Hyperice Discovery API
-  description: Agent- and crawler-facing discovery documents.
-  humanURL: https://hyperice.com/agents.md
-  baseURL: https://hyperice.com/api/2026-04/graphql.json
-  tags:
-  - Discovery
-  properties:
-  - type: OpenAPI
-    url: openapi/hyperice-discovery-api-openapi.yml
-- aid: hyperice:hyperice-products-api
-  name: Hyperice Products API
-  description: Product catalog read operations.
-  humanURL: https://hyperice.com/agents.md
-  baseURL: https://hyperice.com/api/2026-04/graphql.json
-  tags:
-  - Product
-  tags_raw:
-  - Products
-  properties:
-  - type: OpenAPI
-    url: openapi/hyperice-products-api-openapi.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: ucp
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
