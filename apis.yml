@@ -50,22 +50,22 @@ tags:
 - Retail
 - Health and Wellness
 - Consumer Hardware
-- Sports And Fitness
 - Agentic Commerce
 - GraphQL
 - MCP
 - Shopify
+- Fitness
 tags_raw:
 - Company
 - Commerce
 - Retail
 - Health and Wellness
 - Consumer Hardware
-- Sports and Fitness
 - Agentic Commerce
 - GraphQL
 - MCP
 - Shopify
+- Fitness
 apis:
 - name: Hyperice Storefront GraphQL API
   description: The Shopify Storefront GraphQL API served on Hyperice's own domain. Full introspection
@@ -209,3 +209,5 @@ x-enrichment:
   status: enriched
   artifacts_added: 22
   pass: local-v1
+x-tags-removed:
+- Sports And Fitness

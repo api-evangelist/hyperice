@@ -1,41 +1,40 @@
-# Kin Score artifact — hyperice — 2026-08-25T154045
+# Kin Score artifact — hyperice — 2026-10-03T000835
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: hyperice
-  schema_version: 0.14.0
-  scored_at: '2026-08-25'
-  run_ts: 2026-08-25T154045
-  composite: 46.5
-  band: developing
+  schema_version: 0.23.0
+  scored_at: '2026-10-03'
+  run_ts: 2026-10-03T000835
+  composite: 29.4
+  band: thin
   facets:
-    discoverability: 92.6
-    contract_quality: 53.9
-    governance: 30.3
+    discoverability: 75.0
+    contract_quality: 10.4
+    contract_governance: 18.2
     operational_transparency: 0.0
     developer_ergonomics: 49.4
-    commercial_clarity: 21.1
-    contract_governance: 30.3
     access_clarity: 21.1
   agent_readiness:
-    score: 55.0
-    band: agent-native
+    score: 39.6
+    band: agent-ready
+    band_gated_from: agent-native
     dimensions:
       spec_presence: true
       agentic_access: derived
-      reversibility_documented: na
-      mcp_server: verified
+      reversibility_documented: false
+      mcp_server: platform
       auth_clarity: served
-      idempotency: na
-      error_semantics: documented
-      openapi_examples: partial
+      idempotency: documented
+      error_semantics: derived
+      openapi_examples: false
       rate_limit_signal: documented
       event_surface_described: false
       agent_skills: derived
       well_known_catalog: false
       consent_identity: false
       agent_card: false
-      dry_run_mode: na
+      dry_run_mode: false
       delegated_identity: served
       protected_resource_metadata: verified
       dynamic_client_registration: false
@@ -44,15 +43,10 @@ kin_score:
     applies: true
     regime: Health
     regime_id: health
-    score: 58.8
+    score: 32.8
     matched_via: tags
   provenance:
-    mcp: first-party
+    mcp: platform-generated
     skills: derived
     agentic_access: derived
     conformance: first-party
-    contracts:
-      total: 1
-      derived: 0
-      coverage: 0.0
-      callable: 100.0
