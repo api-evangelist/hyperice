@@ -64,50 +64,129 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Hyperice is a recovery and movement-enhancement technology company founded in 2010 and headquartered in
-Irvine, California — the Hypervolt percussion massage line, the Normatec dynamic air-compression systems it
-acquired in 2020, and the Venom thermal/vibration wearables.
+Hyperice is a recovery and movement-enhancement technology company founded in 2010 and headquartered in Irvine, California, known for the Hypervolt percussion massage line, the Normatec dynamic air-compression systems it acquired in 2020, and the Venom thermal/vibration wearables. Its API surface is not a developer platform but an agentic-commerce storefront: hyperice.com runs on Shopify and publishes a machine-readable agent contract at /llms.txt and /agents.md, a Universal Commerce Protocol (UCP) merchant profile at /.well-known/ucp, a live MCP shopping server at /api/ucp/mcp, a fully introspectable Shopify Storefront GraphQL API, OIDC/OAuth2 customer accounts at accounts.hyperice.com, and an unauthenticated read-only product and collection JSON surface.
 
-Hyperice runs **no developer program**: no developer portal, no docs host, no API keys, no SDKs, no OpenAPI.
-What it does have is a genuine **agentic-commerce surface**, because hyperice.com runs on Shopify and has
-opted into the agent layer. That surface is real, live, and machine-readable.
+**Areas:** Company · Commerce · Retail · Health and Wellness · Consumer Hardware · Agentic Commerce · GraphQL · MCP · Shopify · Fitness
 
-## API surface
+## Hyperice on APIs.io
 
-| Surface | Endpoint | Status |
-|---|---|---|
-| Shopify Storefront GraphQL | `https://hyperice.com/api/2026-04/graphql.json` | Live. **Full introspection succeeds unauthenticated** — 424 types, 35 queries, 41 mutations. The only write surface. |
-| UCP shopping server (MCP) | `https://hyperice.com/api/ucp/mcp` | Live. JSON-RPC 2.0. 13 tools. Gated behind a UCP agent profile (`422 invalid_profile_url` anonymously). |
-| Storefront JSON (read-only) | `https://hyperice.com/products.json` etc. | Live, public, unauthenticated. 68 published products. |
-| Customer accounts (OIDC) | `https://accounts.hyperice.com/` | OIDC + OAuth2 authorization_code + PKCE S256. |
+Everything profiled for Hyperice is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/hyperice/](https://apis.io/providers/hyperice/)** — or go straight to one of the APIs or properties below.
 
-Hyperice publishes its own agent contract at [`/llms.txt`](https://hyperice.com/llms.txt) and
-[`/agents.md`](https://hyperice.com/agents.md), a UCP merchant profile at
-[`/.well-known/ucp`](https://hyperice.com/.well-known/ucp), and a dedicated
-`sitemap_agentic_discovery.xml` whose only entry is `/agents.md`.
+### APIs (2)
 
-## Artifacts
+- [Hyperice Storefront GraphQL API](https://apis.io/apis/hyperice/hyperice-storefront-graphql-api/) — The Shopify Storefront GraphQL API served on Hyperice's own domain. Full introspection succeeded unauthenticated on 2026-07-31 — 424 types, 35 QueryRoot…
+- [Hyperice UCP Shopping MCP Server](https://apis.io/apis/hyperice/hyperice-ucp-shopping-mcp-server/) — A live MCP (JSON-RPC 2.0 over HTTP) server implementing the Universal Commerce Protocol shopping service, declared by Hyperice's own /.well-known/ucp…
 
-- `graphql/` — the full 12,465-line SDL, captured by live introspection
-- `openapi/` — an API Evangelist **derivation** of the public read surface (Hyperice publishes no OpenAPI)
-- `mcp/` — the MCP server manifest and the REST/GraphQL/MCP tool crosswalk
-- `llms/` — `/llms.txt` and `/agents.md`, verbatim
-- `well-known/` — UCP profile, OIDC discovery, RFC 8414 and RFC 9728 metadata, verbatim
-- `authentication/`, `scopes/` — the three-tier auth posture, read from live discovery documents
-- `conventions/`, `errors/`, `rate-limits/`, `lifecycle/`, `data-model/`, `conformance/`
-- `skills/`, `agentic-access/`, `overlays/`, `packages/`, `security/`
+### Published properties
 
-## Notable findings
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-- **`api.`, `developer.`, `docs.`, `mcp.`, `status.` and `trust.hyperice.com` all answer HTTP 200 and none of
-  them exists.** A wildcard AmazonS3 record 301-redirects every unprovisioned subdomain to the storefront
-  homepage. There is no developer portal, no status page and no trust center.
-- The Storefront GraphQL API is served in **public access mode**, so every cart and customer mutation is
-  reachable with no credential — the widest agentic exposure on this perimeter, and entirely undocumented by
-  Hyperice, whose `/llms.txt` describes only the read-only surface and the UCP tools.
-- No A2A agent card (`/.well-known/agent-card.json` and `/.well-known/agent.json` both 404), no
-  `security.txt`, no compliance program, no webhooks or AsyncAPI, and no first-party SDKs.
-- The GitHub org `hyper-ice` is **not** this company (blog `moe.hyice.org`, zero public repos).
+#### MCP servers (1)
 
-- https://hyperice.com/
-- https://forgeglobal.com/hyperice_stock/
+Model Context Protocol servers that expose the API to agents.
+
+- [hyperice-ucp-shopping](https://apis.io/servers/hyperice/hyperice-ucp-shopping/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Hyperice Agentic Access](https://apis.io/agentic-access/hyperice/hyperice-agentic-access/)
+
+#### Collections (1)
+
+Postman and Open Collection request collections.
+
+- [Hyperice Storefront API](https://apis.io/collections/hyperice/open-hyperice-storefront/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Hyperice Storefront Overlay](https://apis.io/overlays/hyperice/hyperice-storefront-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Hyperice Authentication](https://apis.io/security/hyperice/hyperice-authentication/)
+- [Hyperice Domain Security](https://apis.io/security/hyperice/hyperice-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Hyperice Scopes](https://apis.io/scopes/hyperice/hyperice-scopes/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Hyperice Rate Limits](https://apis.io/rate-limits/hyperice/hyperice-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://hyperice.com/)
+- [Documentation](https://hyperice.com/agents.md)
+- [Getting started](https://hyperice.com/llms.txt)
+- [API reference](https://ucp.dev/2026-04-08/specification/overview/)
+- [Sign up](https://accounts.hyperice.com/)
+- [Support](https://hyperice.com/pages/contact)
+- [Blog](https://hyperice.com/blogs/hyperhub)
+- [Terms of service](https://hyperice.com/policies/terms-of-service)
+- [Privacy policy](https://hyperice.com/policies/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 29.5** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 10.4 |
+| Contract governance | 18.2 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 49.4 |
+| Access clarity | 21.1 |
+
+**Agent readiness 39.6** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | platform (partial credit) |
+
+**Regulatory alignment 32.8** — Health
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/hyperice/](https://apis.io/providers/hyperice/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Hyperice: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/hyperice/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
